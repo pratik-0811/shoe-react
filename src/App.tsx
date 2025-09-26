@@ -11,6 +11,7 @@ import Login from './pages/Login';
 import UserProfile from './pages/UserProfile';
 import Cart from './pages/Cart';
 import Wishlist from './pages/Wishlist';
+import Dashboard from './pages/Admin/Dashboard';
 
 function App() {
   return (
@@ -28,6 +29,8 @@ function App() {
             <Route path="/profile" element={<UserProfile />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/wishlist" element={<Wishlist />} />
+            <Route path="/admin" element={<Dashboard />} />
+            <Route path="/admin/*" element={<Dashboard />} />
           </Routes>
         </main>
         <Footer />

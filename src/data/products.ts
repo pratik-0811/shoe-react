@@ -1,10 +1,10 @@
 import { Product, Review } from '../types';
 
-export const reviews: { [productId: number]: Review[] } = {
-  1: [
+export const reviews: { [productId: string]: Review[] } = {
+  "1": [
     {
-      id: 1,
-      userId: 1,
+      _id: "1",
+      userId: "1",
       userName: "Emma Wilson",
       userAvatar: "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100",
       rating: 5,
@@ -14,8 +14,8 @@ export const reviews: { [productId: number]: Review[] } = {
       verified: true
     },
     {
-      id: 2,
-      userId: 2,
+      _id: "2",
+      userId: "2",
       userName: "Sarah Chen",
       userAvatar: "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=100",
       rating: 4,
@@ -25,8 +25,8 @@ export const reviews: { [productId: number]: Review[] } = {
       verified: true
     },
     {
-      id: 3,
-      userId: 3,
+      _id: "3",
+      userId: "3",
       userName: "Michael Rodriguez",
       userAvatar: "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=100",
       rating: 5,
@@ -36,10 +36,10 @@ export const reviews: { [productId: number]: Review[] } = {
       verified: true
     }
   ],
-  2: [
+  "2": [
     {
-      id: 4,
-      userId: 4,
+      _id: "4",
+      userId: "4",
       userName: "David Kim",
       userAvatar: "https://images.pexels.com/photos/1040880/pexels-photo-1040880.jpeg?auto=compress&cs=tinysrgb&w=100",
       rating: 5,
@@ -49,8 +49,8 @@ export const reviews: { [productId: number]: Review[] } = {
       verified: true
     },
     {
-      id: 5,
-      userId: 5,
+      _id: "5",
+      userId: "5",
       userName: "Lisa Thompson",
       userAvatar: "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=100",
       rating: 4,
@@ -64,7 +64,7 @@ export const reviews: { [productId: number]: Review[] } = {
 
 export const products: Product[] = [
   {
-    id: 1,
+    _id: "1",
     name: "Premium Leather Handbag",
     price: 299,
     originalPrice: 399,
@@ -82,7 +82,7 @@ export const products: Product[] = [
     badge: "Sale"
   },
   {
-    id: 2,
+    _id: "2",
     name: "Designer Watch Collection",
     price: 459,
     image: "https://images.pexels.com/photos/277390/pexels-photo-277390.jpeg?auto=compress&cs=tinysrgb&w=500",
@@ -99,7 +99,7 @@ export const products: Product[] = [
     badge: "New"
   },
   {
-    id: 3,
+    _id: "3",
     name: "Artisan Coffee Mug Set",
     price: 89,
     originalPrice: 120,
@@ -116,7 +116,7 @@ export const products: Product[] = [
     inStock: true
   },
   {
-    id: 4,
+    _id: "4",
     name: "Minimalist Desk Lamp",
     price: 159,
     image: "https://images.pexels.com/photos/1112598/pexels-photo-1112598.jpeg?auto=compress&cs=tinysrgb&w=500",
@@ -133,7 +133,7 @@ export const products: Product[] = [
     badge: "Popular"
   },
   {
-    id: 5,
+    _id: "5",
     name: "Vintage Camera Collection",
     price: 799,
     originalPrice: 999,
@@ -151,7 +151,7 @@ export const products: Product[] = [
     badge: "Limited"
   },
   {
-    id: 6,
+    _id: "6",
     name: "Organic Cotton T-Shirt",
     price: 45,
     image: "https://images.pexels.com/photos/1126993/pexels-photo-1126993.jpeg?auto=compress&cs=tinysrgb&w=500",

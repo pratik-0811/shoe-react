@@ -28,12 +28,12 @@ const Cart: React.FC = () => {
         
         // If we have a server cart, use it instead of local cart
         if (cartData && cartData.items && cartData.items.length > 0) {
-          // Clear local cart and use server cart
-          clearCart();
           setItems(cartData.items);
         } else if (localItems.length > 0) {
-          // If we have local items but no server items, sync to server
-          await cartService.syncCart(localItems);
+          // If we have local items but no server items, merge with server
+          await cartService.mergeWithServerCart();
+          const updatedCart = await cartService.getCart();
+          setItems(updatedCart.items || []);
         }
         setLoading(false);
       } catch (err) {

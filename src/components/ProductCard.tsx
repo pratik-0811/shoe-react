@@ -25,7 +25,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, index = 0 }) => {
   };
 
   return (
-    <Link to={`/product/${product.id}`} className="group">
+    <Link to={`/product/${product._id}`} className="group">
       <div 
         className="bg-white rounded-lg shadow-sm hover:shadow-xl transition-all duration-500 overflow-hidden transform hover:-translate-y-2 animate-fade-in"
         style={{ animationDelay: `${index * 0.1}s` }}
@@ -51,11 +51,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, index = 0 }) => {
           <button 
             onClick={handleWishlistToggle}
             className={`absolute top-3 right-3 p-2 bg-white rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 ${
-              isInWishlist(product.id) ? 'bg-red-50' : 'hover:bg-primary-50'
+              isInWishlist(product._id) ? 'bg-red-50' : 'hover:bg-primary-50'
             }`}
           >
             <Heart className={`w-4 h-4 transition-colors ${
-              isInWishlist(product.id) ? 'text-red-500 fill-current' : 'text-gray-600 hover:text-red-500'
+              isInWishlist(product._id) ? 'text-red-500 fill-current' : 'text-gray-600 hover:text-red-500'
             }`} />
           </button>
 
@@ -82,7 +82,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, index = 0 }) => {
                 }`}
               />
             ))}
-            <span className="text-sm text-gray-600 ml-2">({product.reviews})</span>
+            <span className="text-sm text-gray-600 ml-2">({product.reviews?.length || 0})</span>
           </div>
 
           <div className="flex items-center justify-between mb-3">

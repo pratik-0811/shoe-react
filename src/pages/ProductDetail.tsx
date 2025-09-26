@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Star, Heart, ShoppingBag, Check, ArrowLeft, Share2, ThumbsUp, Shield, Truck, RotateCcw } from 'lucide-react';
 import { useCart } from '../hooks/useCart';
 import { useWishlist } from '../hooks/useWishlist';
-import { productService } from '../services/productService';
+import productService from '../services/productService';
 import { Product } from '../types';
 
 const ProductDetail: React.FC = () => {

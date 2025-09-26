@@ -3,23 +3,54 @@ import { CartItem, Cart } from '../types';
 
 class CartService {
   async getCart(): Promise<Cart> {
-    return api.get<Cart>('/cart');
+    try {
+      return await api.get<Cart>('/cart');
+    } catch (error) {
+      // Fallback to local cart when server is unavailable
+      return this.getLocalCart() || { items: [], totalPrice: 0, totalItems: 0 };
+    }
   }
 
   async addToCart(productId: string, quantity = 1, size?: string, color?: string): Promise<Cart> {
-    return api.post<Cart>('/cart/items', { productId, quantity, size, color });
+    try {
+      return await api.post<Cart>('/cart/items', { productId, quantity, size, color });
+    } catch (error) {
+      // Fallback to local cart when server is unavailable
+      const { products } = await import('../data/products');
+      const product = products.find(p => p._id === productId);
+      if (product) {
+        return this.addToLocalCart(product, quantity, size, color);
+      }
+      throw new Error('Product not found');
+    }
   }
 
   async updateCartItem(itemId: string, quantity: number): Promise<Cart> {
-    return api.put<Cart>(`/cart/items/${itemId}`, { quantity });
+    try {
+      return await api.put<Cart>(`/cart/items/${itemId}`, { quantity });
+    } catch (error) {
+      // Fallback to local cart when server is unavailable
+      return this.updateLocalCartItem(itemId, quantity);
+    }
   }
 
   async removeFromCart(itemId: string): Promise<Cart> {
-    return api.delete<Cart>(`/cart/items/${itemId}`);
+    try {
+      return await api.delete<Cart>(`/cart/items/${itemId}`);
+    } catch (error) {
+      // Fallback to local cart when server is unavailable
+      return this.removeFromLocalCart(itemId);
+    }
   }
 
   async clearCart(): Promise<{ message: string }> {
-    return api.delete<{ message: string }>('/cart');
+    try {
+      return await api.delete<{ message: string }>('/cart');
+    } catch (error) {
+      // Fallback to local cart when server is unavailable
+      this.clearLocalCart();
+      return { message: 'Cart cleared locally' };
+    }
   }
 
   // For guest users (cart stored in localStorage)
@@ -101,26 +132,31 @@ class CartService {
 
   // Merge local cart with server cart when user logs in
   async mergeWithServerCart(): Promise<Cart> {
-    const localCart = this.getLocalCart();
-    if (!localCart || localCart.items.length === 0) {
+    try {
+      const localCart = this.getLocalCart();
+      if (!localCart || localCart.items.length === 0) {
+        return this.getCart();
+      }
+      
+      // Add each local item to server cart
+      for (const item of localCart.items) {
+        await this.addToCart(
+          item.product._id,
+          item.quantity,
+          item.size,
+          item.color
+        );
+      }
+      
+      // Clear local cart after merging
+      this.clearLocalCart();
+      
+      // Get updated server cart
       return this.getCart();
+    } catch (error) {
+      // If server merge fails, return local cart
+      return this.getLocalCart() || { items: [], totalPrice: 0, totalItems: 0 };
     }
-    
-    // Add each local item to server cart
-    for (const item of localCart.items) {
-      await this.addToCart(
-        item.product._id,
-        item.quantity,
-        item.size,
-        item.color
-      );
-    }
-    
-    // Clear local cart after merging
-    this.clearLocalCart();
-    
-    // Get updated server cart
-    return this.getCart();
   }
 }
 
