@@ -44,12 +44,32 @@ const DashboardStats: React.FC = () => {
         api.get('/abandoned-carts/admin/stats')
       ]);
 
+      // Backend returns flat objects, so we need to structure them properly
       setStats({
-        products: productStats.data,
-        orders: orderStats.data,
-        abandonedCarts: abandonedCartStats.data
+        products: {
+          total: productStats.data.total || 0,
+          inStock: productStats.data.inStock || 0,
+          outOfStock: productStats.data.outOfStock || 0,
+          lowStock: productStats.data.lowStock || 0,
+          categories: productStats.data.categoryStats?.length || 0
+        },
+        orders: {
+          total: orderStats.data.total || 0,
+          pending: orderStats.data.pending || 0,
+          processing: orderStats.data.processing || 0,
+          shipped: orderStats.data.shipped || 0,
+          delivered: orderStats.data.delivered || 0,
+          cancelled: orderStats.data.cancelled || 0,
+          totalRevenue: orderStats.data.totalRevenue || 0
+        },
+        abandonedCarts: {
+          total: abandonedCartStats.data.total || 0,
+          recovered: abandonedCartStats.data.recovered || 0,
+          totalValue: abandonedCartStats.data.statusBreakdown?.reduce((sum: number, stat: any) => sum + (stat.totalValue || 0), 0) || 0,
+          recoveryRate: abandonedCartStats.data.recoveryRate || 0
+        }
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(err.response?.data?.message || 'Failed to fetch stats');
     } finally {
       setLoading(false);
@@ -133,7 +153,7 @@ const DashboardStats: React.FC = () => {
     },
     {
       title: 'Total Revenue',
-      value: `$${stats.orders.totalRevenue.toLocaleString()}`,
+      value: `₹${stats.orders.totalRevenue ? stats.orders.totalRevenue.toLocaleString() : '0'}`,
       icon: '💰',
       color: 'bg-emerald-500',
       textColor: 'text-emerald-600'
@@ -214,7 +234,7 @@ const DashboardStats: React.FC = () => {
             <div className="flex justify-between items-center">
               <span className="text-sm font-medium text-gray-600">Total Value</span>
               <span className="text-lg font-semibold text-purple-600">
-                ${stats.abandonedCarts.totalValue.toLocaleString()}
+                ₹{stats.abandonedCarts.totalValue ? stats.abandonedCarts.totalValue.toLocaleString() : '0'}
               </span>
             </div>
           </div>

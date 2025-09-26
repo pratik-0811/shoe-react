@@ -1,0 +1,68 @@
+<svg width="300" height="400" viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgTeam1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e3a8a;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#60a5fa;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="suitGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1f2937;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#374151;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="faceGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fde68a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:1" />
+    </linearGradient>
+    <filter id="teamShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="2" dy="4" stdDeviation="4" flood-color="rgba(0,0,0,0.3)"/>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="300" height="400" fill="url(#bgTeam1)"/>
+  
+  <!-- Decorative elements -->
+  <circle cx="50" cy="50" r="30" fill="rgba(255,255,255,0.1)" opacity="0.6"/>
+  <circle cx="250" cy="350" r="40" fill="rgba(255,255,255,0.08)" opacity="0.4"/>
+  
+  <!-- Person silhouette -->
+  <g transform="translate(150,200)" filter="url(#teamShadow)">
+    <!-- Head -->
+    <circle cx="0" cy="-50" r="35" fill="url(#faceGrad1)"/>
+    
+    <!-- Hair -->
+    <path d="M-30 -70 Q0 -85 30 -70 Q35 -65 30 -55 Q20 -60 10 -58 Q0 -60 -10 -58 Q-20 -60 -30 -55 Q-35 -65 -30 -70 Z" fill="#451a03"/>
+    
+    <!-- Eyes -->
+    <circle cx="-12" cy="-55" r="3" fill="#1f2937"/>
+    <circle cx="12" cy="-55" r="3" fill="#1f2937"/>
+    
+    <!-- Smile -->
+    <path d="M-10 -45 Q0 -40 10 -45" stroke="#1f2937" stroke-width="2" fill="none" stroke-linecap="round"/>
+    
+    <!-- Suit jacket -->
+    <path d="M-45 -10 Q-50 0 -45 20 L-40 80 Q-35 100 -20 120 L20 120 Q35 100 40 80 L45 20 Q50 0 45 -10 Q40 -15 30 -12 Q20 -8 10 -10 Q0 -12 -10 -10 Q-20 -8 -30 -12 Q-40 -15 -45 -10 Z" fill="url(#suitGrad1)"/>
+    
+    <!-- Shirt -->
+    <path d="M-20 -8 Q0 -12 20 -8 L25 40 Q20 60 15 80 L-15 80 Q-20 60 -25 40 Z" fill="white"/>
+    
+    <!-- Tie -->
+    <path d="M-5 -5 Q0 -8 5 -5 L8 30 Q5 45 0 50 Q-5 45 -8 30 Z" fill="#f59e0b"/>
+    
+    <!-- Suit lapels -->
+    <path d="M-25 -8 Q-15 -5 -10 5 L-15 25 Q-25 15 -30 5 Z" fill="#4b5563"/>
+    <path d="M25 -8 Q15 -5 10 5 L15 25 Q25 15 30 5 Z" fill="#4b5563"/>
+  </g>
+  
+  <!-- Solewaale branding -->
+  <text x="150" y="50" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="white" text-anchor="middle">
+    SOLEWAALE TEAM
+  </text>
+  
+  <!-- Professional badge -->
+  <g transform="translate(220,320)">
+    <circle cx="30" cy="30" r="25" fill="rgba(245,158,11,0.9)" stroke="white" stroke-width="2"/>
+    <text x="30" y="27" font-family="Arial, sans-serif" font-size="8" font-weight="bold" fill="white" text-anchor="middle">EXPERT</text>
+    <text x="30" y="37" font-family="Arial, sans-serif" font-size="6" fill="white" text-anchor="middle">FOOTWEAR</text>
+  </g>
+</svg>

@@ -76,7 +76,11 @@ exports.getAllAbandonedCarts = async (req, res) => {
     
     const abandonedCarts = await AbandonedCart.find(filter)
       .populate('user', 'name email')
-      .populate('items.product', 'name image')
+      .populate({
+        path: 'items.product',
+        select: 'name image',
+        match: { _id: { $ne: null } }
+      })
       .sort({ [sortBy]: sortOrder })
       .limit(limit * 1)
       .skip((page - 1) * limit);
@@ -101,7 +105,11 @@ exports.getUserAbandonedCarts = async (req, res) => {
       user: req.user.id,
       status: { $in: ['active', 'recovered'] }
     })
-    .populate('items.product', 'name image price')
+    .populate({
+      path: 'items.product',
+      select: 'name image price',
+      match: { _id: { $ne: null } }
+    })
     .sort({ abandonedAt: -1 })
     .limit(5); // Limit to recent 5
     
@@ -120,7 +128,10 @@ exports.recoverAbandonedCart = async (req, res) => {
       recoveryToken,
       status: 'active',
       expiresAt: { $gt: new Date() }
-    }).populate('items.product');
+    }).populate({
+      path: 'items.product',
+      match: { _id: { $ne: null } }
+    });
     
     if (!abandonedCart) {
       return res.status(404).json({ message: "Invalid or expired recovery token" });
@@ -168,7 +179,10 @@ exports.recoverAbandonedCart = async (req, res) => {
     }
     
     // Recalculate cart total
-    await currentCart.populate('items.product');
+    await currentCart.populate({
+      path: 'items.product',
+      match: { _id: { $ne: null } }
+    });
     currentCart.total = currentCart.items.reduce((total, item) => {
       return total + (item.product.price * item.quantity);
     }, 0);
@@ -219,7 +233,11 @@ exports.sendRecoveryReminder = async (req, res) => {
     
     const abandonedCart = await AbandonedCart.findById(id)
       .populate('user', 'name email')
-      .populate('items.product', 'name image price');
+      .populate({
+        path: 'items.product',
+        select: 'name image price',
+        match: { _id: { $ne: null } }
+      });
     
     if (!abandonedCart) {
       return res.status(404).json({ message: "Abandoned cart not found" });
@@ -251,9 +269,77 @@ exports.sendRecoveryReminder = async (req, res) => {
   }
 };
 
+// Send bulk recovery reminders (admin only)
+exports.sendBulkReminders = async (req, res) => {
+  try {
+    const { cartIds } = req.body;
+    
+    if (!cartIds || !Array.isArray(cartIds) || cartIds.length === 0) {
+      return res.status(400).json({ message: "Cart IDs are required" });
+    }
+    
+    const results = {
+      success: [],
+      failed: []
+    };
+    
+    for (const cartId of cartIds) {
+      try {
+        const abandonedCart = await AbandonedCart.findById(cartId)
+          .populate('user', 'name email')
+          .populate({
+            path: 'items.product',
+            select: 'name image price',
+            match: { _id: { $ne: null } }
+          });
+        
+        if (!abandonedCart) {
+          results.failed.push({ cartId, reason: 'Cart not found' });
+          continue;
+        }
+        
+        if (abandonedCart.status !== 'active') {
+          results.failed.push({ cartId, reason: 'Cart is not active' });
+          continue;
+        }
+        
+        if (abandonedCart.reminderCount >= abandonedCart.maxReminders) {
+          results.failed.push({ cartId, reason: 'Maximum reminders already sent' });
+          continue;
+        }
+        
+        // Update reminder tracking
+        abandonedCart.lastReminderSent = new Date();
+        abandonedCart.reminderCount += 1;
+        await abandonedCart.save();
+        
+        results.success.push({
+          cartId,
+          email: abandonedCart.user.email,
+          reminderCount: abandonedCart.reminderCount
+        });
+      } catch (error) {
+        results.failed.push({ cartId, reason: error.message });
+      }
+    }
+    
+    res.status(200).json({
+      message: `Bulk reminders processed: ${results.success.length} sent, ${results.failed.length} failed`,
+      results
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error sending bulk reminders", error: error.message });
+  }
+};
+
 // Get abandoned cart statistics (admin only)
 exports.getAbandonedCartStats = async (req, res) => {
   try {
+    const total = await AbandonedCart.countDocuments();
+    const active = await AbandonedCart.countDocuments({ status: 'active' });
+    const recovered = await AbandonedCart.countDocuments({ status: 'recovered' });
+    const ignored = await AbandonedCart.countDocuments({ status: 'ignored' });
+    
     const stats = await AbandonedCart.aggregate([
       {
         $group: {
@@ -264,9 +350,7 @@ exports.getAbandonedCartStats = async (req, res) => {
       }
     ]);
     
-    const totalAbandoned = await AbandonedCart.countDocuments({ status: 'active' });
-    const totalRecovered = await AbandonedCart.countDocuments({ status: 'recovered' });
-    const recoveryRate = totalAbandoned > 0 ? ((totalRecovered / (totalAbandoned + totalRecovered)) * 100).toFixed(2) : 0;
+    const recoveryRate = (active + recovered) > 0 ? ((recovered / (active + recovered)) * 100).toFixed(2) : 0;
     
     const recentAbandoned = await AbandonedCart.find({ 
       status: 'active',
@@ -274,9 +358,11 @@ exports.getAbandonedCartStats = async (req, res) => {
     }).countDocuments();
     
     res.status(200).json({
+      total,
+      active,
+      recovered,
+      ignored,
       statusBreakdown: stats,
-      totalAbandoned,
-      totalRecovered,
       recoveryRate: parseFloat(recoveryRate),
       recentAbandoned
     });

@@ -6,22 +6,40 @@ import ProductManagement from './ProductManagement';
 import OrderManagement from './OrderManagement';
 import BannerManagement from './BannerManagement';
 import AbandonedCartManagement from './AbandonedCartManagement';
+import CategoryManagement from './CategoryManagement';
+import ReviewManagement from './ReviewManagement';
+import CouponManagement from './CouponManagement';
 
-type TabType = 'dashboard' | 'products' | 'orders' | 'banners' | 'abandoned-carts';
+type TabType = 'dashboard' | 'products' | 'categories' | 'orders' | 'banners' | 'abandoned-carts' | 'reviews' | 'coupons';
 
 const AdminDashboard: React.FC = () => {
-  const { user } = useAuth();
+  const { user, loading, isAuthenticated } = useAuth();
   const [activeTab, setActiveTab] = useState<TabType>('dashboard');
 
-  // Redirect if not admin
-  if (!user?.isAdmin) {
-    return <Navigate to="/" replace />;
+  // Show loading while auth is being checked
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading admin dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Redirect if not authenticated or not admin
+  if (!isAuthenticated || !user?.isAdmin) {
+    return <Navigate to="/login" replace />;
   }
 
   const tabs = [
     { id: 'dashboard' as TabType, label: 'Dashboard', icon: '📊' },
     { id: 'products' as TabType, label: 'Products', icon: '👟' },
+    { id: 'categories' as TabType, label: 'Categories', icon: '📂' },
     { id: 'orders' as TabType, label: 'Orders', icon: '📦' },
+    { id: 'reviews' as TabType, label: 'Reviews', icon: '⭐' },
+    { id: 'coupons' as TabType, label: 'Coupons', icon: '🎫' },
     { id: 'banners' as TabType, label: 'Banners', icon: '🎨' },
     { id: 'abandoned-carts' as TabType, label: 'Abandoned Carts', icon: '🛒' },
   ];
@@ -32,8 +50,14 @@ const AdminDashboard: React.FC = () => {
         return <DashboardStats />;
       case 'products':
         return <ProductManagement />;
+      case 'categories':
+        return <CategoryManagement />;
       case 'orders':
         return <OrderManagement />;
+      case 'reviews':
+        return <ReviewManagement />;
+      case 'coupons':
+        return <CouponManagement />;
       case 'banners':
         return <BannerManagement />;
       case 'abandoned-carts':

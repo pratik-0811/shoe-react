@@ -1,35 +1,52 @@
 import api from './api';
 import { Product } from '../types';
 
+export interface WishlistItem {
+  _id?: string;
+  product: Product;
+  addedAt?: string;
+}
+
 export interface Wishlist {
   _id?: string;
   user?: string;
-  items: Product[];
+  items: WishlistItem[];
   createdAt?: string;
   updatedAt?: string;
 }
 
 class WishlistService {
   async getWishlist(): Promise<Wishlist> {
-    return api.get<Wishlist>('/wishlist');
+    const res = await api.get<Wishlist>('/wishlist');
+    return res.data; // ✅ FIX
   }
 
   async addToWishlist(productId: string): Promise<Wishlist> {
-    return api.post<Wishlist>('/wishlist/items', { productId });
+    const res = await api.post<Wishlist>('/wishlist/items', { productId });
+    return res.data; // ✅ FIX
   }
 
   async removeFromWishlist(productId: string): Promise<Wishlist> {
-    return api.delete<Wishlist>(`/wishlist/items/${productId}`);
+    const res = await api.delete<Wishlist>(`/wishlist/items/${productId}`);
+    return res.data; // ✅ FIX
   }
 
   async clearWishlist(): Promise<{ message: string }> {
-    return api.delete<{ message: string }>('/wishlist');
+    const res = await api.delete<{ message: string }>('/wishlist');
+    return res.data; // ✅ FIX
   }
 
   // For guest users (wishlist stored in localStorage)
   getLocalWishlist(): Product[] {
     const wishlistStr = localStorage.getItem('wishlist');
-    return wishlistStr ? JSON.parse(wishlistStr) : [];
+    if (!wishlistStr || wishlistStr === 'undefined' || wishlistStr === 'null') {
+      return [];
+    }
+    try {
+      return JSON.parse(wishlistStr);
+    } catch (error) {
+      return [];
+    }
   }
 
   saveLocalWishlist(items: Product[]): void {
@@ -39,12 +56,12 @@ class WishlistService {
   addToLocalWishlist(product: Product): Product[] {
     const wishlist = this.getLocalWishlist();
     const exists = wishlist.find(item => item._id === product._id);
-    
+
     if (!exists) {
       wishlist.push(product);
       this.saveLocalWishlist(wishlist);
     }
-    
+
     return wishlist;
   }
 
@@ -62,22 +79,32 @@ class WishlistService {
 
   async mergeWithServerWishlist(): Promise<Wishlist> {
     const localWishlist = this.getLocalWishlist();
-    
+
     if (localWishlist.length > 0) {
       // Add local items to server wishlist
       for (const product of localWishlist) {
         try {
-          await this.addToWishlist(product._id);
+          await this.addToWishlist(product._id!);
         } catch (error) {
-          console.error('Error merging wishlist item:', error);
+          // Continue with next item if one fails
         }
       }
-      
+
       // Clear local wishlist after successful merge
       this.clearLocalWishlist();
     }
-    
+
     return this.getWishlist();
+  }
+
+  async getWishlistCount(): Promise<number> {
+    try {
+      const wishlist = await this.getWishlist();
+      return wishlist.items?.length || 0;
+    } catch (error) {
+      // Fallback to local wishlist count for guest users
+      return this.getLocalWishlist().length;
+    }
   }
 }
 

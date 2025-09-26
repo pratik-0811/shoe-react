@@ -1,4 +1,6 @@
 const Banner = require("../models/banner.model");
+const { getFilenameFromUrl, deleteFile } = require("../config/multer.config");
+const path = require('path');
 
 // Get all active banners for public display
 exports.getActiveBanners = async (req, res) => {
@@ -8,13 +10,19 @@ exports.getActiveBanners = async (req, res) => {
     
     const filter = {
       isActive: true,
-      $or: [
-        { startDate: { $exists: false } },
-        { startDate: { $lte: currentDate } }
-      ],
-      $or: [
-        { endDate: { $exists: false } },
-        { endDate: { $gte: currentDate } }
+      $and: [
+        {
+          $or: [
+            { startDate: { $exists: false } },
+            { startDate: { $lte: currentDate } }
+          ]
+        },
+        {
+          $or: [
+            { endDate: { $exists: false } },
+            { endDate: { $gte: currentDate } }
+          ]
+        }
       ]
     };
     
@@ -84,6 +92,12 @@ exports.createBanner = async (req, res) => {
       endDate: req.body.endDate ? new Date(req.body.endDate) : undefined
     };
     
+    // If image was uploaded via the upload endpoint, it should be in req.body.image
+    // Validate that image is provided
+    if (!bannerData.image) {
+      return res.status(400).json({ message: "Banner image is required" });
+    }
+    
     const banner = new Banner(bannerData);
     await banner.save();
     
@@ -96,21 +110,32 @@ exports.createBanner = async (req, res) => {
 // Update banner (admin only)
 exports.updateBanner = async (req, res) => {
   try {
+    const existingBanner = await Banner.findById(req.params.id);
+    if (!existingBanner) {
+      return res.status(404).json({ message: "Banner not found" });
+    }
+    
     const updateData = {
       ...req.body,
       startDate: req.body.startDate ? new Date(req.body.startDate) : undefined,
       endDate: req.body.endDate ? new Date(req.body.endDate) : undefined
     };
     
+    // Handle image update
+    if (updateData.image && updateData.image !== existingBanner.image) {
+      // Delete old image if it's being replaced and it's an uploaded file
+      if (existingBanner.image && existingBanner.image.includes('/uploads/banners/')) {
+        const filename = getFilenameFromUrl(existingBanner.image);
+        const filePath = path.join(__dirname, '..', 'uploads', 'banners', filename);
+        deleteFile(filePath);
+      }
+    }
+    
     const banner = await Banner.findByIdAndUpdate(
       req.params.id,
       updateData,
       { new: true, runValidators: true }
     );
-    
-    if (!banner) {
-      return res.status(404).json({ message: "Banner not found" });
-    }
     
     res.status(200).json(banner);
   } catch (error) {
@@ -121,10 +146,19 @@ exports.updateBanner = async (req, res) => {
 // Delete banner (admin only)
 exports.deleteBanner = async (req, res) => {
   try {
-    const banner = await Banner.findByIdAndDelete(req.params.id);
+    const banner = await Banner.findById(req.params.id);
     if (!banner) {
       return res.status(404).json({ message: "Banner not found" });
     }
+    
+    // Delete associated image file if it's an uploaded file
+    if (banner.image && banner.image.includes('/uploads/banners/')) {
+      const filename = getFilenameFromUrl(banner.image);
+      const filePath = path.join(__dirname, '..', 'uploads', 'banners', filename);
+      deleteFile(filePath);
+    }
+    
+    await Banner.findByIdAndDelete(req.params.id);
     res.status(200).json({ message: "Banner deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: "Error deleting banner", error: error.message });

@@ -1,79 +1,48 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Heart, ShoppingBag, ArrowLeft, Loader } from 'lucide-react';
-import { useWishlist } from '../hooks/useWishlist';
-import { useCart } from '../hooks/useCart';
+import { Heart, ArrowLeft, Loader } from 'lucide-react';
+import { useWishlist } from '../contexts/WishlistContext';
 import { useAuth } from '../hooks/useAuth';
 import wishlistService from '../services/wishlistService';
-import cartService from '../services/cartService';
 import ProductCard from '../components/ProductCard';
-import { Product } from '../types';
 
 const Wishlist: React.FC = () => {
-  const { items: localItems, removeItem: removeLocalItem, toggleItem } = useWishlist();
-  const { addItem } = useCart();
-  const { isAuthenticated, user } = useAuth();
-  const [items, setItems] = useState<Product[]>(localItems);
+  const { items } = useWishlist();
+  const { isAuthenticated } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
   useEffect(() => {
-    // Update local state when useWishlist items change
-    setItems(localItems);
-  }, [localItems]);
-  
-  useEffect(() => {
     const fetchWishlist = async () => {
-      if (!isAuthenticated) return;
+      if (!isAuthenticated) {
+        // For guest users, just use local items from the hook
+        setLoading(false);
+        return;
+      }
       
       try {
         setLoading(true);
         const wishlistData = await wishlistService.getWishlist();
         
-        // If we have a server wishlist, use it
+        // If we have a server wishlist, the hook will handle updating the items
         if (wishlistData && wishlistData.items && wishlistData.items.length > 0) {
-          setItems(wishlistData.items);
-        } else if (localItems.length > 0) {
+          // The useWishlist hook will handle the state update
+        } else if (items.length > 0) {
           // If we have local items but no server items, sync to server
           await wishlistService.mergeWithServerWishlist();
         }
         setLoading(false);
       } catch (err) {
-        console.error('Error fetching wishlist:', err);
+        // Silent fail - error handled by UI state
         setError('Failed to load wishlist data');
         setLoading(false);
       }
     };
 
     fetchWishlist();
-  }, [isAuthenticated, user]);
+  }, [isAuthenticated, items]);
   
-  const removeItem = async (productId: string) => {
-    removeLocalItem(productId);
-    
-    if (isAuthenticated) {
-      try {
-        await wishlistService.removeFromWishlist(productId);
-      } catch (err) {
-        console.error('Error removing wishlist item:', err);
-        setError('Failed to remove item from wishlist');
-      }
-    }
-  };
 
-  const handleAddToCart = async (product: Product) => {
-    addItem(product);
-    
-    if (isAuthenticated) {
-      try {
-        await cartService.addToCart(product._id);
-      } catch (err) {
-        console.error('Error adding item to cart:', err);
-        // We don't set error state here to avoid disrupting the UI flow
-        // Just log the error and let the local cart update proceed
-      }
-    }
-  };
 
   if (loading) {
     return (
@@ -109,6 +78,8 @@ const Wishlist: React.FC = () => {
       </div>
     );
   }
+
+
 
   if (items.length === 0) {
     return (

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../../services/api';
+import imageUploadService from '../../services/imageUploadService';
 
 interface Banner {
   _id: string;
@@ -64,6 +65,9 @@ const BannerManagement: React.FC = () => {
     textColor: '#000000',
     targetAudience: ''
   });
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string>('');
 
   useEffect(() => {
     fetchBanners();
@@ -76,9 +80,9 @@ const BannerManagement: React.FC = () => {
       if (positionFilter) params.append('position', positionFilter);
       if (statusFilter) params.append('active', statusFilter);
 
-      const response = await api.get(`/banners/admin/all?${params}`);
-      setBanners(response.data);
-    } catch (err: any) {
+      const response = await api.get(`/banners?${params}`);
+      setBanners(response.data.banners || response.data || []);
+    } catch (err: unknown) {
       setError(err.response?.data?.message || 'Failed to fetch banners');
     } finally {
       setLoading(false);
@@ -87,9 +91,21 @@ const BannerManagement: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setUploading(true);
     try {
+      let imageUrl = formData.image;
+      
+      // Upload new image if file is selected
+      if (selectedFile) {
+        const uploadResponse = await imageUploadService.uploadBannerImage(selectedFile);
+        if (uploadResponse.success && uploadResponse.file) {
+          imageUrl = uploadResponse.file.url;
+        }
+      }
+      
       const submitData = {
         ...formData,
+        image: imageUrl,
         startDate: formData.startDate || undefined,
         endDate: formData.endDate || undefined,
         subtitle: formData.subtitle || undefined,
@@ -111,7 +127,9 @@ const BannerManagement: React.FC = () => {
       resetForm();
       fetchBanners();
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to save banner');
+      setError(err.response?.data?.message || err.message || 'Failed to save banner');
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -133,6 +151,8 @@ const BannerManagement: React.FC = () => {
       textColor: banner.textColor || '#000000',
       targetAudience: banner.targetAudience || ''
     });
+    setImagePreview(banner.image);
+    setSelectedFile(null);
     setShowForm(true);
   };
 
@@ -173,12 +193,38 @@ const BannerManagement: React.FC = () => {
       textColor: '#000000',
       targetAudience: ''
     });
+    setSelectedFile(null);
+    setImagePreview('');
   };
 
   const handleCancel = () => {
     setShowForm(false);
     setEditingBanner(null);
     resetForm();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      
+      // Create preview URL
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        if (e.target?.result) {
+          setImagePreview(e.target.result as string);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeImage = () => {
+    setSelectedFile(null);
+    setImagePreview('');
+    if (!editingBanner) {
+      setFormData({ ...formData, image: '' });
+    }
   };
 
   const getPositionColor = (position: string) => {
@@ -264,14 +310,43 @@ const BannerManagement: React.FC = () => {
                   onChange={(e) => setFormData({ ...formData, subtitle: e.target.value })}
                   className="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
-                <input
-                  type="text"
-                  placeholder="Image URL"
-                  value={formData.image}
-                  onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                  className="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  required
-                />
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Banner Image
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    onChange={handleFileChange}
+                    className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                  />
+                  <p className="mt-1 text-xs text-gray-500">
+                    Upload JPEG, PNG, or WebP image. Max 10MB.
+                  </p>
+                  
+                  {/* Image Preview */}
+                  {imagePreview && (
+                    <div className="mt-4">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Image Preview
+                      </label>
+                      <div className="relative inline-block">
+                        <img
+                          src={imagePreview}
+                          alt="Banner preview"
+                          className="w-full max-w-md h-32 object-cover rounded-lg border border-gray-300"
+                        />
+                        <button
+                          type="button"
+                          onClick={removeImage}
+                          className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600 transition-colors"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
                 <select
                   value={formData.position}
                   onChange={(e) => setFormData({ ...formData, position: e.target.value as any })}
@@ -371,9 +446,15 @@ const BannerManagement: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  disabled={uploading}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
                 >
-                  {editingBanner ? 'Update' : 'Create'} Banner
+                  {uploading && (
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  )}
+                  <span>
+                    {uploading ? 'Uploading...' : editingBanner ? 'Update Banner' : 'Create Banner'}
+                  </span>
                 </button>
               </div>
             </form>

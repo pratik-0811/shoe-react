@@ -12,7 +12,7 @@ const Contact: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Handle form submission
-    console.log('Form submitted:', formData);
+
     // Reset form
     setFormData({ name: '', email: '', subject: '', message: '' });
   };
@@ -54,9 +54,9 @@ const Contact: React.FC = () => {
                   <div>
                     <h3 className="text-lg font-semibold text-gray-800 mb-1">Address</h3>
                     <p className="text-gray-600">
-                      123 Luxury Avenue<br />
-                      New York, NY 10001<br />
-                      United States
+                      Solewaale, Satpur Colony<br />
+                      Satpur Nashik-07<br />
+                      India
                     </p>
                   </div>
                 </div>
@@ -67,8 +67,7 @@ const Contact: React.FC = () => {
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-gray-800 mb-1">Phone</h3>
-                    <p className="text-gray-600">+1 (555) 123-4567</p>
-                    <p className="text-gray-600">+1 (555) 987-6543</p>
+                    <p className="text-gray-600">+91 7709897723</p>
                   </div>
                 </div>
 
@@ -78,8 +77,8 @@ const Contact: React.FC = () => {
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-gray-800 mb-1">Email</h3>
-                    <p className="text-gray-600">hello@luxora.com</p>
-                    <p className="text-gray-600">support@luxora.com</p>
+                    <p className="text-gray-600">hello@solewaale.com</p>
+                <p className="text-gray-600">support@solewaale.com</p>
                   </div>
                 </div>
 
@@ -96,10 +95,42 @@ const Contact: React.FC = () => {
                 </div>
               </div>
 
-              {/* Map placeholder */}
+              {/* Interactive Map */}
               <div className="mt-8">
-                <div className="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center">
-                  <p className="text-gray-500">Interactive Map</p>
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">Find Us Here</h3>
+                <div className="w-full h-64 bg-gray-100 rounded-lg overflow-hidden shadow-lg">
+                  <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3749.8234567890123!2d73.7898765!3d19.9876543!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bddd290b09914b3%3A0x2b2b2b2b2b2b2b2b!2sSatpur%2C%20Nashik%2C%20Maharashtra%2C%20India!5e0!3m2!1sen!2sus!4v1234567890123!5m2!1sen!2sus"
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0 }}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title="Solewaale Store Location - Satpur Colony, Nashik"
+                  ></iframe>
+                </div>
+                <div className="mt-4 p-4 bg-primary-50 rounded-lg">
+                  <div className="flex items-center space-x-2">
+                    <MapPin className="w-5 h-5 text-primary-600" />
+                    <div>
+                      <p className="text-sm font-medium text-primary-800">Visit Our Store</p>
+                      <p className="text-sm text-primary-600">Solewaale, Satpur Colony, Satpur Nashik-07, India</p>
+                    </div>
+                  </div>
+                  <div className="mt-2">
+                    <a
+                      href="https://maps.google.com/?q=Satpur+Colony,+Nashik,+Maharashtra,+India"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center text-sm text-primary-600 hover:text-primary-800 font-medium transition-colors"
+                    >
+                      <span>Get Directions</span>
+                      <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>

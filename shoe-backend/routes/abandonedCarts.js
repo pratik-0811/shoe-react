@@ -14,8 +14,9 @@ router.get("/my-abandoned", abandonedCartController.getUserAbandonedCarts);
 
 // Admin routes
 router.use(isAdmin);
-router.get("/", abandonedCartController.getAllAbandonedCarts);
-router.post("/:id/reminder", abandonedCartController.sendRecoveryReminder);
+router.get("/admin/all", abandonedCartController.getAllAbandonedCarts);
+router.post("/admin/send-reminder/:id", abandonedCartController.sendRecoveryReminder);
+router.post("/admin/send-bulk-reminders", abandonedCartController.sendBulkReminders);
 router.get("/admin/stats", abandonedCartController.getAbandonedCartStats);
 
 module.exports = router;

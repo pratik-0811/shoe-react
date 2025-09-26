@@ -1,19 +1,19 @@
 const mongoose = require("mongoose");
 
 const bannerSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  subtitle: { type: String },
-  description: { type: String },
+  title: { type: String, required: true, trim: true, maxlength: [100, "Title cannot exceed 100 characters"] },
+  subtitle: { type: String, trim: true, maxlength: [150, "Subtitle cannot exceed 150 characters"] },
+  description: { type: String, trim: true, maxlength: [500, "Description cannot exceed 500 characters"] },
   image: { type: String, required: true },
-  buttonText: { type: String },
-  buttonLink: { type: String },
+  buttonText: { type: String, trim: true, maxlength: [50, "Button text cannot exceed 50 characters"] },
+  buttonLink: { type: String, trim: true },
   position: {
     type: String,
     enum: ['hero', 'secondary', 'promotional'],
     default: 'hero'
   },
   isActive: { type: Boolean, default: true },
-  priority: { type: Number, default: 0 }, // Higher number = higher priority
+  priority: { type: Number, default: 0, min: [0, "Priority cannot be negative"] }, // Higher number = higher priority
   startDate: { type: Date },
   endDate: { type: Date },
   backgroundColor: { type: String, default: '#ffffff' },
@@ -23,8 +23,8 @@ const bannerSchema = new mongoose.Schema({
     enum: ['all', 'new_users', 'returning_users', 'premium_users'],
     default: 'all'
   },
-  clickCount: { type: Number, default: 0 },
-  impressionCount: { type: Number, default: 0 }
+  clickCount: { type: Number, default: 0, min: [0, "Click count cannot be negative"] },
+  impressionCount: { type: Number, default: 0, min: [0, "Impression count cannot be negative"] }
 }, {
   timestamps: true
 });

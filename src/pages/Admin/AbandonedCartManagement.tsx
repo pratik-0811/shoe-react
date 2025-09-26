@@ -60,7 +60,7 @@ const AbandonedCartManagement: React.FC = () => {
       const response = await api.get(`/abandoned-carts/admin/all?${params}`);
       setAbandonedCarts(response.data.abandonedCarts);
       setTotalPages(response.data.totalPages);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(err.response?.data?.message || 'Failed to fetch abandoned carts');
     } finally {
       setLoading(false);
@@ -72,7 +72,7 @@ const AbandonedCartManagement: React.FC = () => {
       const response = await api.get('/abandoned-carts/admin/stats');
       setStats(response.data);
     } catch (err) {
-      console.error('Failed to fetch stats:', err);
+      // Silent fail - stats not critical for UI
     }
   };
 
@@ -165,7 +165,7 @@ const AbandonedCartManagement: React.FC = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Total Value</p>
-                <p className="text-2xl font-bold text-purple-600">${stats.totalValue.toLocaleString()}</p>
+                <p className="text-2xl font-bold text-purple-600">₹{stats.totalValue ? stats.totalValue.toLocaleString() : '0'}</p>
               </div>
               <div className="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center text-white text-xl">
                 💰
@@ -266,9 +266,9 @@ const AbandonedCartManagement: React.FC = () => {
                       />
                       <div className="flex-1">
                         <p className="font-medium text-sm">{item.product.name}</p>
-                        <p className="text-xs text-gray-600">Qty: {item.quantity} × ${item.price}</p>
+                        <p className="text-xs text-gray-600">Qty: {item.quantity} × ₹{item.price}</p>
                       </div>
-                      <p className="font-medium text-sm">${(item.quantity * item.price).toFixed(2)}</p>
+                      <p className="font-medium text-sm">₹{(item.quantity * item.price).toFixed(2)}</p>
                     </div>
                   ))}
                 </div>
@@ -277,7 +277,7 @@ const AbandonedCartManagement: React.FC = () => {
                 <div className="mt-4 pt-4 border-t">
                   <div className="flex justify-between font-bold text-lg">
                     <span>Total:</span>
-                    <span>${selectedCart.totalAmount.toFixed(2)}</span>
+                    <span>₹{selectedCart.totalAmount.toFixed(2)}</span>
                   </div>
                 </div>
 
@@ -349,7 +349,7 @@ const AbandonedCartManagement: React.FC = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      ${cart.totalAmount.toFixed(2)}
+                      ₹{cart.totalAmount.toFixed(2)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">{new Date(cart.abandonedAt).toLocaleDateString()}</div>

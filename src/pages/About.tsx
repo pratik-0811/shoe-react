@@ -8,10 +8,10 @@ const About: React.FC = () => {
       <section className="bg-gradient-to-br from-primary-50 to-primary-100 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center animate-fade-in">
-            <h1 className="text-4xl md:text-6xl font-bold text-primary-950 mb-6">About Luxora</h1>
+            <h1 className="text-4xl md:text-6xl font-bold text-primary-950 mb-6">About Solewaale</h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              We believe in creating exceptional experiences through carefully curated products 
-              that combine timeless design with modern functionality.
+              We believe in creating exceptional experiences through carefully curated footwear 
+              that combines timeless style with modern comfort and performance.
             </p>
           </div>
         </div>
@@ -23,7 +23,7 @@ const About: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="animate-slide-up">
               <img
-                src="https://images.pexels.com/photos/1040880/pexels-photo-1040880.jpeg?auto=compress&cs=tinysrgb&w=800"
+                src="/assets/hero-shoes.jpg"
                 alt="Our Story"
                 className="rounded-lg shadow-xl"
               />
@@ -32,18 +32,18 @@ const About: React.FC = () => {
               <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">Our Story</h2>
               <div className="space-y-4 text-gray-600">
                 <p>
-                  Founded in 2020, Luxora began as a passion project to bring together the world's 
-                  most beautiful and functional products in one place. We started with a simple belief: 
-                  that everyday items should be both beautiful and purposeful.
+                  Founded in 2020, Solewaale began as a passion project to bring together the world's 
+                  most innovative and comfortable footwear in one place. We started with a simple belief: 
+                  that every step should be both stylish and comfortable.
                 </p>
                 <p>
-                  Our team travels the globe to discover artisans, designers, and creators who share 
-                  our commitment to excellence. Every product in our collection is chosen for its 
-                  superior craftsmanship, innovative design, and lasting quality.
+                  Our team travels the globe to discover shoe designers, craftsmen, and brands who share 
+                  our commitment to excellence. Every pair of shoes in our collection is chosen for its 
+                  superior comfort, innovative design, and lasting durability.
                 </p>
                 <p>
-                  Today, we're proud to serve thousands of customers worldwide, helping them discover 
-                  products that enhance their daily lives and reflect their personal style.
+                  Today, we're proud to serve thousands of customers worldwide, helping them find 
+                  the perfect shoes that enhance their performance and reflect their personal style.
                 </p>
               </div>
             </div>
@@ -66,12 +66,12 @@ const About: React.FC = () => {
               {
                 icon: Award,
                 title: 'Excellence',
-                description: 'We never compromise on quality and craftsmanship in our product selection.'
+                description: 'We never compromise on quality and craftsmanship in our footwear selection.'
               },
               {
                 icon: Heart,
                 title: 'Passion',
-                description: 'Every product we choose reflects our love for beautiful, functional design.'
+                description: 'Every shoe we choose reflects our love for beautiful, functional footwear design.'
               },
               {
                 icon: Users,
@@ -81,7 +81,7 @@ const About: React.FC = () => {
               {
                 icon: Globe,
                 title: 'Sustainability',
-                description: 'We prioritize products and partners who care about our planet\'s future.'
+                description: 'We prioritize sustainable footwear and partners who care about our planet\'s future.'
               }
             ].map((value, index) => (
               <div key={index} className="text-center animate-scale-in" style={{ animationDelay: `${index * 0.1}s` }}>
@@ -108,7 +108,7 @@ const About: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {[
               { number: '10K+', label: 'Happy Customers' },
-              { number: '500+', label: 'Premium Products' },
+              { number: '500+', label: 'Premium Shoes' },
               { number: '50+', label: 'Countries Served' },
               { number: '4.9', label: 'Average Rating' }
             ].map((stat, index) => (
@@ -127,26 +127,21 @@ const About: React.FC = () => {
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4 animate-fade-in">Meet Our Team</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto animate-fade-in">
-              The passionate people behind Luxora who work tirelessly to bring you the best products.
+              The passionate people behind Solewaale who work tirelessly to bring you the best footwear.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {[
               {
-                name: 'Sarah Johnson',
+                name: 'Pratik Hosmani',
                 role: 'Founder & CEO',
-                image: 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=400'
+                image: '/assets/team-member-1.PNG'
               },
               {
-                name: 'Michael Chen',
-                role: 'Head of Design',
-                image: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=400'
-              },
-              {
-                name: 'Emily Rodriguez',
-                role: 'Product Curator',
-                image: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=400'
+                name: 'Omkar Tidme',
+                role: 'Founder & CFO',
+                image: '/assets/team-member-2.png'
               }
             ].map((member, index) => (
               <div key={index} className="text-center animate-scale-in" style={{ animationDelay: `${index * 0.1}s` }}>

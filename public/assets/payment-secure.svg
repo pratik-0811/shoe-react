@@ -1,0 +1,71 @@
+<svg width="200" height="120" viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgPayment" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e40af;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#60a5fa;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="lockGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:1" />
+    </linearGradient>
+    <filter id="paymentShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="2" dy="4" stdDeviation="6" flood-color="rgba(0,0,0,0.3)"/>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="200" height="120" fill="url(#bgPayment)" rx="12" ry="12"/>
+  
+  <!-- Decorative elements -->
+  <circle cx="30" cy="25" r="8" fill="rgba(255,255,255,0.1)" opacity="0.6"/>
+  <circle cx="170" cy="95" r="6" fill="rgba(255,255,255,0.08)" opacity="0.4"/>
+  
+  <!-- Main security shield -->
+  <g transform="translate(100,60)" filter="url(#paymentShadow)">
+    <!-- Shield background -->
+    <path d="M0 -35 Q-25 -30 -25 -10 Q-25 10 0 35 Q25 10 25 -10 Q25 -30 0 -35 Z" fill="url(#shieldGrad)"/>
+    
+    <!-- Shield border -->
+    <path d="M0 -35 Q-25 -30 -25 -10 Q-25 10 0 35 Q25 10 25 -10 Q25 -30 0 -35 Z" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+    
+    <!-- Lock icon -->
+    <g transform="translate(0,-5)">
+      <!-- Lock body -->
+      <rect x="-8" y="0" width="16" height="12" fill="url(#lockGrad)" rx="2" ry="2"/>
+      
+      <!-- Lock shackle -->
+      <path d="M-6 0 Q-6 -8 0 -8 Q6 -8 6 0" fill="none" stroke="url(#lockGrad)" stroke-width="3" stroke-linecap="round"/>
+      
+      <!-- Keyhole -->
+      <circle cx="0" cy="6" r="2" fill="#1e40af"/>
+      <rect x="-1" y="6" width="2" height="4" fill="#1e40af"/>
+    </g>
+    
+    <!-- Checkmark -->
+    <path d="M-8 5 L-3 10 L8 -5" stroke="white" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  
+  <!-- Solewaale branding -->
+  <g transform="translate(100,25)">
+    <text x="0" y="0" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle">SOLEWAALE</text>
+    <text x="0" y="12" font-family="Arial, sans-serif" font-size="8" fill="rgba(255,255,255,0.8)" text-anchor="middle">SECURE PAYMENTS</text>
+  </g>
+  
+  <!-- Security badges -->
+  <g transform="translate(40,95)">
+    <rect x="-15" y="-8" width="30" height="16" fill="rgba(255,255,255,0.2)" rx="8" ry="8"/>
+    <text x="0" y="-2" font-family="Arial, sans-serif" font-size="6" font-weight="bold" fill="white" text-anchor="middle">SSL</text>
+    <text x="0" y="5" font-family="Arial, sans-serif" font-size="5" fill="white" text-anchor="middle">ENCRYPTED</text>
+  </g>
+  
+  <g transform="translate(160,95)">
+    <rect x="-15" y="-8" width="30" height="16" fill="rgba(255,255,255,0.2)" rx="8" ry="8"/>
+    <text x="0" y="-2" font-family="Arial, sans-serif" font-size="6" font-weight="bold" fill="white" text-anchor="middle">100%</text>
+    <text x="0" y="5" font-family="Arial, sans-serif" font-size="5" fill="white" text-anchor="middle">SECURE</text>
+  </g>
+</svg>

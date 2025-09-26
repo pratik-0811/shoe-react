@@ -2,21 +2,27 @@ const mongoose = require("mongoose");
 
 const abandonedCartItemSchema = new mongoose.Schema({
   product: { type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true },
-  quantity: { type: Number, required: true, min: 1 },
-  price: { type: Number, required: true },
-  name: { type: String, required: true },
+  quantity: { type: Number, required: true, min: [1, "Quantity must be at least 1"] },
+  price: { type: Number, required: true, min: [0, "Price cannot be negative"] },
+  name: { type: String, required: true, trim: true },
   image: { type: String, required: true }
 });
 
 const abandonedCartSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  email: { type: String, required: true },
+  email: { 
+    type: String, 
+    required: true, 
+    lowercase: true,
+    trim: true,
+    match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Please enter a valid email address"]
+  },
   items: [abandonedCartItemSchema],
-  total: { type: Number, required: true },
+  total: { type: Number, required: true, min: [0, "Total cannot be negative"] },
   abandonedAt: { type: Date, default: Date.now },
   lastReminderSent: { type: Date },
-  reminderCount: { type: Number, default: 0 },
-  maxReminders: { type: Number, default: 3 },
+  reminderCount: { type: Number, default: 0, min: [0, "Reminder count cannot be negative"] },
+  maxReminders: { type: Number, default: 3, min: [0, "Max reminders cannot be negative"] },
   status: {
     type: String,
     enum: ['active', 'recovered', 'expired', 'ignored'],

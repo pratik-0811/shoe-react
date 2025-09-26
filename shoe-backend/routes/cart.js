@@ -2,14 +2,19 @@ const express = require("express");
 const router = express.Router();
 const cartController = require("../controllers/cart.controller");
 const { verifyToken } = require("../middleware/auth.middleware");
+const { asyncHandler } = require("../middleware/error.middleware");
 
-// All cart routes are protected
+// Guest cart routes (public)
+router.post("/guest", asyncHandler(cartController.getGuestCart));
+router.post("/guest/items", asyncHandler(cartController.addToGuestCart));
+
+// All other cart routes are protected
 router.use(verifyToken);
 
-router.get("/", cartController.getCart);
-router.post("/add", cartController.addToCart);
-router.put("/update", cartController.updateCartItem);
-router.delete("/remove/:productId", cartController.removeFromCart);
-router.delete("/clear", cartController.clearCart);
+router.get("/", asyncHandler(cartController.getCart));
+router.post("/items", asyncHandler(cartController.addToCart));
+router.put("/items/:itemId", asyncHandler(cartController.updateCartItem));
+router.delete("/items/:itemId", asyncHandler(cartController.removeFromCart));
+router.delete("/", asyncHandler(cartController.clearCart));
 
 module.exports = router;

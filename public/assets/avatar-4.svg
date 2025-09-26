@@ -1,0 +1,38 @@
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGrad4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7c3aed;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="faceGrad4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fecaca;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#fca5a5;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="60" cy="60" r="60" fill="url(#bgGrad4)"/>
+  
+  <!-- Face -->
+  <circle cx="60" cy="45" r="18" fill="url(#faceGrad4)"/>
+  
+  <!-- Body/Shoulders -->
+  <path d="M30 85 Q30 70 45 70 Q60 65 75 70 Q90 70 90 85 Q90 100 60 100 Q30 100 30 85 Z" fill="url(#faceGrad4)"/>
+  
+  <!-- Eyes -->
+  <circle cx="54" cy="42" r="2" fill="#1f2937"/>
+  <circle cx="66" cy="42" r="2" fill="#1f2937"/>
+  
+  <!-- Smile -->
+  <path d="M54 50 Q60 54 66 50" stroke="#1f2937" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  
+  <!-- Hair (long) -->
+  <path d="M42 35 Q50 28 60 30 Q70 28 78 35 Q80 40 75 45 Q70 42 65 40 Q60 38 55 40 Q50 42 45 45 Q40 40 42 35 Z" fill="#dc2626"/>
+  
+  <!-- Hair strands -->
+  <path d="M45 32 Q48 28 52 30" stroke="#dc2626" stroke-width="2" fill="none"/>
+  <path d="M68 30 Q72 28 75 32" stroke="#dc2626" stroke-width="2" fill="none"/>
+  
+  <!-- Initial -->
+  <text x="60" y="105" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle">R</text>
+</svg>

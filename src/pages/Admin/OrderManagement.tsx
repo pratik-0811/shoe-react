@@ -1,52 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../../services/api';
+import { Order, OrderItem, AppliedCoupon } from '../../types';
 
-interface OrderItem {
-  product: {
-    _id: string;
-    name: string;
-    image: string;
-    price: number;
-  };
-  quantity: number;
-  price: number;
-}
-
-interface ShippingAddress {
-  fullName: string;
-  address: string;
-  city: string;
-  postalCode: string;
-  country: string;
-  phone: string;
-}
-
-interface Order {
+interface AdminOrderUser {
   _id: string;
-  orderNumber: string;
-  user: {
-    _id: string;
-    name: string;
-    email: string;
-  };
-  orderItems: OrderItem[];
-  shippingAddress: ShippingAddress;
-  paymentMethod: string;
-  paymentStatus: 'pending' | 'paid' | 'failed';
-  orderStatus: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
-  itemsPrice: number;
-  shippingPrice: number;
-  taxPrice: number;
-  totalPrice: number;
-  createdAt: string;
-  deliveredAt?: string;
+  name: string;
+  email: string;
+}
+
+interface AdminOrder extends Order {
+  user: AdminOrderUser;
 }
 
 const OrderManagement: React.FC = () => {
-  const [orders, setOrders] = useState<Order[]>([]);
+  const [orders, setOrders] = useState<AdminOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [selectedOrder, setSelectedOrder] = useState<AdminOrder | null>(null);
   const [statusFilter, setStatusFilter] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -70,7 +40,7 @@ const OrderManagement: React.FC = () => {
       const response = await api.get(`/orders/admin/all?${params}`);
       setOrders(response.data.orders);
       setTotalPages(response.data.totalPages);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(err.response?.data?.message || 'Failed to fetch orders');
     } finally {
       setLoading(false);
@@ -79,7 +49,7 @@ const OrderManagement: React.FC = () => {
 
   const updateOrderStatus = async (orderId: string, newStatus: string) => {
     try {
-      await api.put(`/orders/${orderId}/status`, { status: newStatus });
+      await api.put(`/orders/${orderId}/status`, { orderStatus: newStatus });
       fetchOrders();
       if (selectedOrder && selectedOrder._id === orderId) {
         setSelectedOrder({ ...selectedOrder, orderStatus: newStatus as any });
@@ -176,7 +146,7 @@ const OrderManagement: React.FC = () => {
                   <div className="space-y-2 text-sm">
                     <p><span className="font-medium">Order Number:</span> {selectedOrder.orderNumber}</p>
                     <p><span className="font-medium">Date:</span> {new Date(selectedOrder.createdAt).toLocaleDateString()}</p>
-                    <p><span className="font-medium">Customer:</span> {selectedOrder.user.name} ({selectedOrder.user.email})</p>
+                    <p><span className="font-medium">Customer:</span> {selectedOrder.user?.name || 'N/A'} ({selectedOrder.user?.email || 'N/A'})</p>
                     <p><span className="font-medium">Payment Method:</span> {selectedOrder.paymentMethod}</p>
                     <div className="flex items-center space-x-2">
                       <span className="font-medium">Payment Status:</span>
@@ -212,13 +182,51 @@ const OrderManagement: React.FC = () => {
                     <p>Phone: {selectedOrder.shippingAddress.phone}</p>
                   </div>
                 </div>
+
+                {/* Billing Address (if different from shipping) */}
+                {selectedOrder.billingAddress && (
+                  selectedOrder.billingAddress.address !== selectedOrder.shippingAddress.address ||
+                  selectedOrder.billingAddress.city !== selectedOrder.shippingAddress.city ||
+                  selectedOrder.billingAddress.postalCode !== selectedOrder.shippingAddress.postalCode ||
+                  selectedOrder.billingAddress.country !== selectedOrder.shippingAddress.country
+                ) && (
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-2">Billing Address</h4>
+                    <div className="text-sm text-gray-600">
+                      <p>{selectedOrder.billingAddress.fullName}</p>
+                      <p>{selectedOrder.billingAddress.address}</p>
+                      <p>{selectedOrder.billingAddress.city}, {selectedOrder.billingAddress.postalCode}</p>
+                      <p>{selectedOrder.billingAddress.country}</p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Applied Coupons */}
+                {selectedOrder.appliedCoupons && selectedOrder.appliedCoupons.length > 0 && (
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-2">Applied Coupons</h4>
+                    <div className="space-y-2">
+                      {selectedOrder.appliedCoupons.map((coupon, index) => (
+                        <div key={index} className="flex items-center justify-between p-2 bg-green-50 rounded border border-green-200">
+                          <div>
+                            <p className="font-medium text-sm text-gray-900">{coupon.code}</p>
+                            <p className="text-xs text-gray-600">
+                              {coupon.type === 'percentage' ? `${coupon.value}% off` : `₹${coupon.value} off`}
+                            </p>
+                          </div>
+                          <p className="font-medium text-sm text-green-600">-₹{coupon.discountAmount.toFixed(2)}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Order Items */}
               <div>
                 <h4 className="font-semibold text-gray-900 mb-2">Order Items</h4>
                 <div className="space-y-3">
-                  {selectedOrder.orderItems.map((item, index) => (
+                  {selectedOrder.items?.map((item, index) => (
                     <div key={index} className="flex items-center space-x-3 border-b pb-3">
                       <img
                         src={item.product.image}
@@ -227,9 +235,9 @@ const OrderManagement: React.FC = () => {
                       />
                       <div className="flex-1">
                         <p className="font-medium text-sm">{item.product.name}</p>
-                        <p className="text-xs text-gray-600">Qty: {item.quantity} × ${item.price}</p>
+                        <p className="text-xs text-gray-600">Qty: {item.quantity} × ₹{item.price}</p>
                       </div>
-                      <p className="font-medium text-sm">${(item.quantity * item.price).toFixed(2)}</p>
+                      <p className="font-medium text-sm">₹{(item.quantity * item.price).toFixed(2)}</p>
                     </div>
                   ))}
                 </div>
@@ -239,19 +247,25 @@ const OrderManagement: React.FC = () => {
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span>Items Price:</span>
-                      <span>${selectedOrder.itemsPrice.toFixed(2)}</span>
+                      <span>₹{(selectedOrder.subtotal || 0).toFixed(2)}</span>
                     </div>
+                    {selectedOrder.totalDiscount && selectedOrder.totalDiscount > 0 && (
+                      <div className="flex justify-between">
+                        <span>Discount:</span>
+                        <span className="text-green-600">-₹{selectedOrder.totalDiscount.toFixed(2)}</span>
+                      </div>
+                    )}
                     <div className="flex justify-between">
                       <span>Shipping:</span>
-                      <span>${selectedOrder.shippingPrice.toFixed(2)}</span>
+                      <span>₹{(selectedOrder.shippingCost || 0).toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Tax:</span>
-                      <span>${selectedOrder.taxPrice.toFixed(2)}</span>
+                      <span>₹{(selectedOrder.tax || 0).toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between font-bold text-lg border-t pt-2">
                       <span>Total:</span>
-                      <span>${selectedOrder.totalPrice.toFixed(2)}</span>
+                      <span>₹{(selectedOrder.total || 0).toFixed(2)}</span>
                     </div>
                   </div>
                 </div>
@@ -286,11 +300,11 @@ const OrderManagement: React.FC = () => {
                   <tr key={order._id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-gray-900">{order.orderNumber}</div>
-                      <div className="text-sm text-gray-500">{order.orderItems.length} items</div>
+                      <div className="text-sm text-gray-500">{order.items?.length || 0} items</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{order.user.name}</div>
-                      <div className="text-sm text-gray-500">{order.user.email}</div>
+                      <div className="text-sm font-medium text-gray-900">{order.user?.name || 'N/A'}</div>
+                      <div className="text-sm text-gray-500">{order.user?.email || 'N/A'}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {new Date(order.createdAt).toLocaleDateString()}
@@ -306,7 +320,7 @@ const OrderManagement: React.FC = () => {
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      ${order.totalPrice.toFixed(2)}
+                      ₹{(order.total || 0).toFixed(2)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <button

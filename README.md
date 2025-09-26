@@ -1,4 +1,4 @@
-# Luxora Shoe Store
+# Solewaale
 
 A full-stack e-commerce application for a premium shoe store built with React, TypeScript, and Node.js.
 
@@ -61,7 +61,7 @@ npm install
 
 ```
 VITE_APP_API_URL=http://localhost:5000/api
-VITE_APP_TITLE=Luxora Shoe Store
+VITE_APP_TITLE=Solewaale
 VITE_APP_DESCRIPTION=Premium shoe store with the latest styles and brands
 ```
 

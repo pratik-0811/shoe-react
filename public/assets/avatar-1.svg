@@ -1,0 +1,31 @@
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="faceGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="60" cy="60" r="60" fill="url(#bgGrad1)"/>
+  
+  <!-- Face -->
+  <circle cx="60" cy="45" r="18" fill="url(#faceGrad1)"/>
+  
+  <!-- Body/Shoulders -->
+  <path d="M30 85 Q30 70 45 70 Q60 65 75 70 Q90 70 90 85 Q90 100 60 100 Q30 100 30 85 Z" fill="url(#faceGrad1)"/>
+  
+  <!-- Eyes -->
+  <circle cx="54" cy="42" r="2" fill="#1f2937"/>
+  <circle cx="66" cy="42" r="2" fill="#1f2937"/>
+  
+  <!-- Smile -->
+  <path d="M54 50 Q60 54 66 50" stroke="#1f2937" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  
+  <!-- Initial -->
+  <text x="60" y="105" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle">S</text>
+</svg>

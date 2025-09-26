@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext, useContext, ReactNode } from 'react';
+import React, { useState, useEffect, createContext, useContext, ReactNode, useMemo } from 'react';
 import userService from '../services/userService';
 import { User } from '../types';
 
@@ -7,15 +7,15 @@ type AuthContextType = {
   isAuthenticated: boolean;
   loading: boolean;
   error: string | null;
-  login: (email: string, password: string) => Promise<void>;
-  register: (data: { name: string; email: string; password: string }) => Promise<void>;
+  login: (email: string, password: string, rememberMe?: boolean, onLoginSuccess?: () => Promise<void>) => Promise<void>;
+  register: (data: { name: string; email: string; password: string }, onRegisterSuccess?: () => Promise<void>) => Promise<void>;
   logout: () => void;
   updateUser: (userData: Partial<User>) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
+const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -24,12 +24,43 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const initAuth = async () => {
       try {
         if (userService.isAuthenticated()) {
-          const currentUser = await userService.getCurrentUser();
-          setUser(currentUser);
+          // First try to get stored user data
+          const storedUser = userService.getStoredUser();
+          if (storedUser) {
+            setUser(storedUser);
+            // Verify token is still valid by making a quick API call
+            try {
+              const currentUser = await userService.getCurrentUser();
+              // Update stored data if API returns different data
+              if (JSON.stringify(currentUser) !== JSON.stringify(storedUser)) {
+                setUser(currentUser);
+                localStorage.setItem('user', JSON.stringify(currentUser));
+              }
+            } catch (apiErr) {
+              // Token might be expired, clear auth data
+              userService.logout();
+              setUser(null);
+            }
+          } else {
+            // Fallback to API call if no stored user
+            try {
+              const currentUser = await userService.getCurrentUser();
+              setUser(currentUser);
+              localStorage.setItem('user', JSON.stringify(currentUser));
+            } catch (apiErr) {
+              // Clear invalid token
+              userService.logout();
+              setUser(null);
+            }
+          }
+        } else {
+          setUser(null);
         }
       } catch (err) {
-        console.error('Auth initialization error:', err);
+        // Silent fail - error handled by UI state
         setError('Failed to initialize authentication');
+        userService.logout();
+        setUser(null);
       } finally {
         setLoading(false);
       }
@@ -38,12 +69,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     initAuth();
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string, rememberMe?: boolean, onLoginSuccess?: () => Promise<void>) => {
     try {
       setLoading(true);
       setError(null);
-      const userData = await userService.login(email, password);
+      const userData = await userService.login({ email, password, rememberMe });
       setUser(userData);
+      
+      // Call the success callback if provided (for cart/wishlist merging)
+      if (onLoginSuccess) {
+        await onLoginSuccess();
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed');
       throw err;
@@ -52,12 +88,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const register = async (data: { name: string; email: string; password: string }) => {
+  const register = async (data: { name: string; email: string; password: string }, onRegisterSuccess?: () => Promise<void>) => {
     try {
       setLoading(true);
       setError(null);
       const userData = await userService.register(data);
       setUser(userData);
+      
+      // Call the success callback if provided (for cart/wishlist merging)
+      if (onRegisterSuccess) {
+        await onRegisterSuccess();
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Registration failed');
       throw err;
@@ -86,9 +127,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const isAuthenticated = useMemo(() => {
+    return !!user && !!localStorage.getItem('token');
+  }, [user]);
+
   const value = {
     user,
-    isAuthenticated: !!user,
+    isAuthenticated,
     loading,
     error,
     login,
@@ -104,10 +149,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export const useAuth = () => {
+const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 };
+
+// Export at the end for Fast Refresh compatibility
+export { AuthProvider, useAuth };

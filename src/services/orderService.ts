@@ -5,150 +5,74 @@ class OrderService {
   private orders: Order[] = [];
 
   // Get all orders for the current user
-  async getOrders(): Promise<Order[]> {
-    try {
-      const response = await api.get('/orders');
-      this.orders = response.data;
-      return this.orders;
-    } catch (error) {
-      console.error('Error fetching orders:', error);
-      // Return mock data as fallback
-      return this.getMockOrders();
+  async getOrders(params?: { 
+    page?: number; 
+    limit?: number; 
+    status?: string; 
+    dateFrom?: string; 
+    dateTo?: string; 
+  }): Promise<{ orders: Order[]; total: number }> {
+    const queryParams = new URLSearchParams();
+    if (params?.page) queryParams.append('page', params.page.toString());
+    if (params?.limit) queryParams.append('limit', params.limit.toString());
+    if (params?.status) queryParams.append('status', params.status);
+    if (params?.dateFrom) queryParams.append('dateFrom', params.dateFrom);
+    if (params?.dateTo) queryParams.append('dateTo', params.dateTo);
+    
+    const response = await api.get(`/orders/my-orders${queryParams.toString() ? '?' + queryParams.toString() : ''}`);
+    
+    // Handle paginated response from backend
+    if (response.data && response.data.orders && Array.isArray(response.data.orders)) {
+      this.orders = response.data.orders;
+      return {
+        orders: response.data.orders,
+        total: response.data.total || response.data.orders.length
+      };
+    } else {
+      // Fallback for unexpected response format
+      return {
+        orders: [],
+        total: 0
+      };
     }
   }
 
   // Get recent orders (last 5)
   async getRecentOrders(): Promise<Order[]> {
-    try {
-      const orders = await this.getOrders();
-      return orders.slice(0, 5);
-    } catch (error) {
-      console.error('Error fetching recent orders:', error);
-      return this.getMockOrders().slice(0, 5);
-    }
+    const result = await this.getOrders({ limit: 5 });
+    return result.orders;
   }
 
   // Get order by ID
   async getOrderById(orderId: string): Promise<Order | null> {
-    try {
-      const response = await api.get(`/orders/${orderId}`);
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching order:', error);
-      // Fallback to local search
-      const orders = await this.getOrders();
-      return orders.find(order => order._id === orderId) || null;
-    }
+    const response = await api.get(`/orders/${orderId}`);
+    return response.data;
   }
 
   // Create a new order
   async createOrder(orderData: Omit<Order, '_id' | 'createdAt' | 'updatedAt'>): Promise<Order> {
-    try {
-      const response = await api.post('/orders', orderData);
-      return response.data;
-    } catch (error) {
-      console.error('Error creating order:', error);
-      // Create mock order for fallback
-      const mockOrder: Order = {
-        _id: Date.now().toString(),
-        userId: orderData.userId,
-        items: orderData.items,
-        total: orderData.total,
-        status: orderData.status,
-        shippingAddress: orderData.shippingAddress,
-        paymentMethod: orderData.paymentMethod,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-      this.orders.push(mockOrder);
-      return mockOrder;
-    }
+    const response = await api.post('/orders', orderData);
+    return response.data;
   }
 
   // Update order status
   async updateOrderStatus(orderId: string, status: string): Promise<Order | null> {
-    try {
-      const response = await api.patch(`/orders/${orderId}`, { status });
-      return response.data;
-    } catch (error) {
-      console.error('Error updating order status:', error);
-      // Fallback to local update
-      const orderIndex = this.orders.findIndex(order => order._id === orderId);
-      if (orderIndex !== -1) {
-        this.orders[orderIndex].status = status;
-        this.orders[orderIndex].updatedAt = new Date().toISOString();
-        return this.orders[orderIndex];
-      }
-      return null;
-    }
+    const response = await api.patch(`/orders/${orderId}`, { status });
+    return response.data;
   }
 
   // Get order count for user
   async getOrderCount(): Promise<number> {
-    try {
-      const orders = await this.getOrders();
-      return orders.length;
-    } catch (error) {
-      console.error('Error getting order count:', error);
-      return 0;
-    }
+    const result = await this.getOrders();
+    return result.total;
   }
 
-  // Mock data for fallback
-  private getMockOrders(): Order[] {
-    return [
-      {
-        _id: '1',
-        userId: 'user1',
-        items: [
-          {
-            productId: '1',
-            name: 'Nike Air Max 270',
-            price: 150,
-            quantity: 1,
-            image: '/images/nike-air-max-270.jpg'
-          }
-        ],
-        total: 150,
-        status: 'delivered',
-        shippingAddress: {
-          street: '123 Main St',
-          city: 'New York',
-          state: 'NY',
-          zipCode: '10001',
-          country: 'USA'
-        },
-        paymentMethod: 'credit_card',
-        createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-        updatedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
-      },
-      {
-        _id: '2',
-        userId: 'user1',
-        items: [
-          {
-            productId: '2',
-            name: 'Adidas Ultraboost 22',
-            price: 180,
-            quantity: 1,
-            image: '/images/adidas-ultraboost-22.jpg'
-          }
-        ],
-        total: 180,
-        status: 'shipped',
-        shippingAddress: {
-          street: '123 Main St',
-          city: 'New York',
-          state: 'NY',
-          zipCode: '10001',
-          country: 'USA'
-        },
-        paymentMethod: 'paypal',
-        createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-        updatedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString()
-      }
-    ];
+  async downloadInvoice(orderId: string): Promise<any> {
+    const response = await api.get(`/orders/${orderId}/invoice`);
+    return response.data.invoice;
   }
+
+
 }
 
 export default new OrderService();
