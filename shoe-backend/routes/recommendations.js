@@ -70,7 +70,7 @@ router.get('/products', optionalAuth, async (req, res) => {
         userId = decoded.id;
       } catch (err) {
         // Token invalid, continue as guest
-        console.log('Invalid token, treating as guest user');
+  
       }
     }
 
@@ -78,15 +78,15 @@ router.get('/products', optionalAuth, async (req, res) => {
     
     if (userId) {
       // For logged-in users: get recommendations based on purchase history
-      console.log('Getting purchase-based recommendations for user:', userId);
+  
       recommendations = await recommendationService.getPurchaseBasedRecommendations(userId);
     } else if (sessionId) {
       // For guest users: get recommendations based on cart contents
-      console.log('Getting cart-based recommendations for session:', sessionId);
+  
       recommendations = await recommendationService.getCartBasedRecommendations(sessionId);
     } else {
       // Fallback to trending products
-      console.log('Getting trending products as fallback');
+  
       recommendations = await recommendationService.getTrendingProducts();
     }
     
@@ -185,7 +185,7 @@ router.get('/enhanced', optionalAuth, async (req, res) => {
         // Token invalid, continue as guest
       }
     }
-    console.log(userId);
+  
     const recommendations = await recommendationService.getEnhancedRecommendations(
       userId,
       sessionId,

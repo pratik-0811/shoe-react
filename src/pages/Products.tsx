@@ -39,14 +39,20 @@ const Products = React.memo(() => {
     priceMin: 0,
     priceMax: 10000,
     material: '',
-    gender: ''
+    gender: '',
+    collection: ''
   });
 
-  // Sync selectedCategory with URL params
+  // Sync selectedCategory and collection with URL params
   useEffect(() => {
     const categoryFromUrl = searchParams.get('category') || 'all';
+    const collectionFromUrl = searchParams.get('collection') || '';
     setSelectedCategory(categoryFromUrl);
-    setActiveFilters(prev => ({ ...prev, category: categoryFromUrl === 'all' ? '' : categoryFromUrl }));
+    setActiveFilters(prev => ({ 
+      ...prev, 
+      category: categoryFromUrl === 'all' ? '' : categoryFromUrl,
+      collection: collectionFromUrl
+    }));
   }, [searchParams]);
   
   // Handle filter changes with URL updates
@@ -88,6 +94,12 @@ const Products = React.memo(() => {
       newSearchParams.delete('priceMax');
     }
     
+    if (newFilters.collection) {
+      newSearchParams.set('collection', newFilters.collection);
+    } else {
+      newSearchParams.delete('collection');
+    }
+    
     setSearchParams(newSearchParams, { replace: true });
   }, [searchParams, setSearchParams]);
 
@@ -102,7 +114,19 @@ const handleColorSelect = useCallback((productId: string, color: string) => {
   // Generate SEO data - moved before conditional returns
   const seoTitle = useMemo(() => {
     let title = 'Premium Footwear Collection';
-    if (selectedCategory && selectedCategory !== 'all') {
+    if (activeFilters.collection) {
+      const collectionTitles = {
+        'new-arrivals': 'New Arrivals - Latest Shoe Collection',
+        'bestsellers': 'Bestsellers - Top Rated Shoes',
+        'seasonal-trends': 'Seasonal Trends - Trending Footwear',
+        'sale': 'Sale - Discounted Shoes',
+        'clearance': 'Clearance - Shoes on Sale',
+        'bundle': 'Bundle Deals - Special Offers',
+        'featured': 'Featured Collection - Premium Shoes',
+        'trending': 'Trending Now - Popular Footwear'
+      };
+      title = collectionTitles[activeFilters.collection] || title;
+    } else if (selectedCategory && selectedCategory !== 'all') {
       const categoryName = categories.find(c => c._id === selectedCategory || c.slug === selectedCategory)?.name || selectedCategory;
       title = `${categoryName} Shoes`;
     }
@@ -110,11 +134,23 @@ const handleColorSelect = useCallback((productId: string, color: string) => {
       title = `Search Results for "${searchTerm}"`;
     }
     return title;
-  }, [selectedCategory, searchTerm, categories]);
+  }, [selectedCategory, searchTerm, categories, activeFilters.collection]);
 
   const seoDescription = useMemo(() => {
     let description = 'Discover our premium collection of shoes for men and women. Quality footwear with style, comfort, and durability.';
-    if (selectedCategory && selectedCategory !== 'all') {
+    if (activeFilters.collection) {
+      const collectionDescriptions = {
+        'new-arrivals': 'Discover the latest shoe arrivals. Fresh styles and newest footwear trends just added to our collection.',
+        'bestsellers': 'Shop our bestselling shoes. Top-rated footwear loved by customers for quality and style.',
+        'seasonal-trends': 'Explore seasonal shoe trends. Stay fashionable with our curated collection of trending footwear.',
+        'sale': 'Find amazing deals on quality shoes. Discounted footwear without compromising on style or comfort.',
+        'clearance': 'Huge savings on clearance shoes. Limited time offers on premium footwear with deep discounts.',
+        'bundle': 'Special bundle deals on shoes. Save more when you buy multiple pairs from our collection.',
+        'featured': 'Our featured shoe collection. Handpicked premium footwear showcasing the best of our inventory.',
+        'trending': 'Trending shoes everyone is talking about. Popular footwear styles that are in high demand.'
+      };
+      description = collectionDescriptions[activeFilters.collection] || description;
+    } else if (selectedCategory && selectedCategory !== 'all') {
       const categoryName = categories.find(c => c._id === selectedCategory || c.slug === selectedCategory)?.name || selectedCategory;
       description = `Shop ${categoryName.toLowerCase()} shoes. Find the perfect pair from our curated collection of premium footwear.`;
     }
@@ -122,11 +158,24 @@ const handleColorSelect = useCallback((productId: string, color: string) => {
       description = `Search results for "${searchTerm}". Browse our shoe collection for matching products.`;
     }
     return description;
-  }, [selectedCategory, searchTerm, categories]);
+  }, [selectedCategory, searchTerm, categories, activeFilters.collection]);
 
   const seoKeywords = useMemo(() => {
     let keywords = 'shoes, footwear, sneakers, boots, sandals, men shoes, women shoes, premium shoes';
-    if (selectedCategory && selectedCategory !== 'all') {
+    if (activeFilters.collection) {
+      const collectionKeywords = {
+        'new-arrivals': 'new arrivals, latest shoes, new footwear, fresh styles',
+        'bestsellers': 'bestsellers, top rated, popular shoes, customer favorites',
+        'seasonal-trends': 'seasonal trends, trending footwear, fashion shoes, stylish',
+        'sale': 'sale shoes, discounted footwear, cheap shoes, deals',
+        'clearance': 'clearance, clearance shoes, discount footwear, bargain shoes',
+        'bundle': 'bundle deals, shoe bundles, multiple pairs, special offers',
+        'featured': 'featured collection, premium shoes, curated footwear, exclusive',
+        'trending': 'trending shoes, popular footwear, hot styles, in demand'
+      };
+      const collectionKw = collectionKeywords[activeFilters.collection] || '';
+      keywords = `${collectionKw}, ${keywords}`;
+    } else if (selectedCategory && selectedCategory !== 'all') {
       const categoryName = categories.find(c => c._id === selectedCategory || c.slug === selectedCategory)?.name || selectedCategory;
       keywords = `${categoryName.toLowerCase()}, ${categoryName.toLowerCase()} shoes, ${keywords}`;
     }
@@ -134,7 +183,7 @@ const handleColorSelect = useCallback((productId: string, color: string) => {
       keywords = `${activeFilters.brand}, ${keywords}`;
     }
     return keywords;
-  }, [selectedCategory, activeFilters.brand, categories]);
+  }, [selectedCategory, activeFilters.brand, activeFilters.collection, categories]);
 
   const fetchProducts = useCallback(async () => {
     try {
@@ -238,6 +287,50 @@ const handleColorSelect = useCallback((productId: string, color: string) => {
     
     if (activeFilters.gender) {
       filtered = filtered.filter(product => product.gender === activeFilters.gender);
+    }
+
+    // Filter by collection
+    if (activeFilters.collection) {
+      switch (activeFilters.collection) {
+        case 'new-arrivals':
+          // Sort by creation date and take recent products
+          filtered = filtered.sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
+          break;
+        case 'bestsellers':
+          // Filter by high rating or popularity
+          filtered = filtered.filter(product => (product.rating || 0) >= 4.0);
+          break;
+        case 'seasonal-trends':
+          // Filter by seasonal products or trending items
+          filtered = filtered.filter(product => product.badge === 'trending' || product.season === 'current');
+          break;
+        case 'sale':
+          // Filter by discounted products
+          filtered = filtered.filter(product => product.discounted_price && product.discounted_price < product.price);
+          break;
+        case 'clearance':
+          // Filter by clearance items (high discount)
+          filtered = filtered.filter(product => {
+            if (product.discounted_price && product.price) {
+              const discount = ((product.price - product.discounted_price) / product.price) * 100;
+              return discount >= 30; // 30% or more discount
+            }
+            return false;
+          });
+          break;
+        case 'bundle':
+          // Filter by bundle deals or featured products
+          filtered = filtered.filter(product => product.isFeatured || product.badge === 'bundle');
+          break;
+        case 'featured':
+          filtered = filtered.filter(product => product.isFeatured);
+          break;
+        case 'trending':
+          filtered = filtered.filter(product => product.badge === 'trending');
+          break;
+        default:
+          break;
+      }
     }
 
     // Filter by search term
@@ -494,7 +587,7 @@ const handleColorSelect = useCallback((productId: string, color: string) => {
                   placeholder="Search shoes by name, brand, or description..."
                   value={searchTerm}
                   onChange={handleSearchChange}
-                  className="w-full pl-8 sm:pl-9 lg:pl-10 pr-3 sm:pr-4 py-2 sm:py-2.5 lg:py-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors touch-manipulation shadow-sm"
+                  className="w-full pl-8 sm:pl-9 lg:pl-10 pr-3 sm:pr-4 py-2 sm:py-2.5 lg:py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors touch-manipulation shadow-sm"
                 />
                 {searchTerm && (
                   <button
@@ -512,7 +605,7 @@ const handleColorSelect = useCallback((productId: string, color: string) => {
                   <select
                     value={sortBy}
                     onChange={handleSortChange}
-                    className="appearance-none w-full px-2.5 sm:px-3 lg:px-4 py-2 sm:py-2.5 lg:py-3 text-xs sm:text-sm lg:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors touch-manipulation shadow-sm pr-6 sm:pr-7 lg:pr-8"
+                    className="appearance-none w-full px-2.5 sm:px-3 lg:px-4 py-2 sm:py-2.5 lg:py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors touch-manipulation shadow-sm pr-6 sm:pr-7 lg:pr-8"
                   >
                     <option value="name">Sort by Name</option>
                     <option value="price-low">Price: Low to High</option>
@@ -641,11 +734,11 @@ const handleColorSelect = useCallback((productId: string, color: string) => {
               <div className="w-16 h-16 sm:w-24 sm:h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Eye className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400" />
               </div>
-              <h3 className="text-lg sm:text-xl font-medium text-gray-800 mb-2">No shoes found</h3>
-              <p className="text-sm sm:text-base text-gray-600 mb-4 px-4">Try adjusting your search or filter criteria</p>
+              <h3 className="text-xl font-medium text-gray-800 mb-2">No shoes found</h3>
+              <p className="text-base text-gray-600 mb-4 px-4">Try adjusting your search or filter criteria</p>
               <button
                 onClick={clearFilters}
-                className="px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base bg-primary-950 text-white rounded-lg hover:bg-primary-800 transition-colors touch-manipulation"
+                className="px-4 sm:px-6 py-2 sm:py-3 text-base bg-primary-950 text-white rounded-lg hover:bg-primary-800 transition-colors touch-manipulation"
               >
                 Clear All Filters
               </button>

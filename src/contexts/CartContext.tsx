@@ -40,6 +40,11 @@ export const CartProvider = ({ children }: CartProviderProps) => {
   // Derived values
   const itemCount = items.reduce((total, item) => total + item.quantity, 0);
   const total = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+  
+  // Debug effect to track itemCount changes
+  useEffect(() => {
+
+  }, [itemCount, items]);
 
   // Helper to get or create session ID for guest users
   const getSessionId = (): string => {
@@ -332,21 +337,45 @@ export const CartProvider = ({ children }: CartProviderProps) => {
   const removeItem = async (itemId: string) => {
     try {
       if (isAuthenticated) {
-        setLoading(true);
+        setLoading(true);        
         await cartService.removeFromCart(itemId);
+
+        
         const cart = await cartService.getCart();
-        setItems(normalizeCart(cart));
+
+        
+        const normalizedCart = normalizeCart(cart);
+
+        
+        setItems(normalizedCart);
+
       } else {
         setItems(prevItems => prevItems.filter(item => item._id !== itemId));
       }
     } catch (error: any) {
-      // Silent fail - error handled by UI state
+
       
-      // Handle 401 errors gracefully
-      if (error?.response?.status === 401) {
+      // Handle different error scenarios gracefully
+      if (error?.response?.status === 404) {
+        // Item not found - refresh cart state to sync with server
+
+        try {
+          const cart = await cartService.getCart();
+          const normalizedCart = normalizeCart(cart);
+          setItems(normalizedCart);
+  
+        } catch (refreshError) {
+          
+        }
+        // Don't throw the error - handle gracefully
+        return;
+      } else if (error?.response?.status === 401) {
         // Authentication failed during cart item removal
+
+      } else {
+        // For other errors, still throw to let UI handle them
+        throw error;
       }
-      throw error;
     } finally {
       setLoading(false);
     }
@@ -358,9 +387,13 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         setLoading(true);
         await cartService.clearCart();
         setItems([]);
+        // Also clear localStorage and sessionStorage to prevent cart restoration
+        localStorage.removeItem('cart');
+        sessionStorage.removeItem('cartBackup');
       } else {
         setItems([]);
         localStorage.removeItem('cart');
+        sessionStorage.removeItem('cartBackup');
       }
     } catch (error: any) {
       // Silent fail - error handled by UI state
@@ -371,6 +404,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         // Still clear local cart
         setItems([]);
         localStorage.removeItem('cart');
+        sessionStorage.removeItem('cartBackup');
       } else {
         throw error;
       }

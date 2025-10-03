@@ -3,6 +3,177 @@ const Cart = require("../models/cart.model");
 const Product = require("../models/product.model");
 const User = require("../models/user.model");
 const Coupon = require("../models/coupon.model");
+const emailService = require("../services/emailService");
+
+// Create COD order (Cash on Delivery)
+exports.createCODOrder = async (req, res) => {
+  try {
+    const { items, shippingAddress, notes, appliedCoupons } = req.body;
+    
+    // Validate required fields
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ message: "Order items are required" });
+    }
+    
+    if (!shippingAddress || !shippingAddress.street || !shippingAddress.city) {
+      return res.status(400).json({ message: "Complete shipping address is required" });
+    }
+    
+    // Validate all products from request items are still available
+    const orderItems = [];
+    let calculatedSubtotal = 0;
+    
+    for (let item of items) {
+      const product = await Product.findById(item.product);
+      if (!product) {
+        return res.status(400).json({ message: `Product not found: ${item.name || item.product}` });
+      }
+      
+      if (!product.inStock) {
+        return res.status(400).json({ 
+          message: `Product ${product.name} is out of stock` 
+        });
+      }
+      
+      // Validate stock quantity
+      if (item.quantity > product.stock) {
+        return res.status(400).json({ 
+          message: `Insufficient stock for ${product.name}. Available: ${product.stock}, Requested: ${item.quantity}` 
+        });
+      }
+      
+      const itemTotal = product.price * item.quantity;
+      calculatedSubtotal += itemTotal;
+      
+      orderItems.push({
+        product: product._id,
+        quantity: item.quantity,
+        price: product.price,
+        name: product.name,
+        image: product.images?.[0] || product.image,
+        size: item.size,
+        color: item.color
+      });
+      
+      // Update product stock
+      product.stock -= item.quantity;
+      await product.save();
+    }
+    
+    // Calculate costs
+    const shippingCost = calculatedSubtotal > 1000 ? 0 : 50; // Free shipping over ₹1000
+    const tax = calculatedSubtotal * 0.18; // 18% GST
+    
+    // Apply coupons if provided
+    let processedCoupons = [];
+    let totalDiscount = 0;
+    
+    if (appliedCoupons && Array.isArray(appliedCoupons) && appliedCoupons.length > 0) {
+      for (let appliedCoupon of appliedCoupons) {
+        const coupon = await Coupon.findOne({ code: appliedCoupon.code, status: 'active' });
+        if (!coupon) {
+          return res.status(400).json({ message: `Invalid coupon code: ${appliedCoupon.code}` });
+        }
+        
+        totalDiscount += appliedCoupon.discount;
+        
+        processedCoupons.push({
+          coupon: coupon._id,
+          code: appliedCoupon.code,
+          type: appliedCoupon.type,
+          value: coupon.value,
+          discountAmount: appliedCoupon.discount,
+          appliedAt: new Date()
+        });
+      }
+    }
+    
+    const total = calculatedSubtotal + shippingCost + tax - totalDiscount;
+    
+    // Generate order number
+    const orderNumber = `COD-${Date.now()}`;
+    
+    // Create COD order
+    const order = new Order({
+      user: req.user.id,
+      orderNumber,
+      items: orderItems,
+      shippingAddress: {
+        fullName: shippingAddress.fullName || req.user.name || 'Guest User',
+        address: shippingAddress.street || shippingAddress.address,
+        city: shippingAddress.city,
+        postalCode: shippingAddress.zipCode || shippingAddress.postalCode,
+        country: shippingAddress.country,
+        phone: shippingAddress.phone
+      },
+      paymentMethod: 'cash_on_delivery',
+      paymentStatus: 'pending', // COD orders start as pending
+      orderStatus: 'confirmed', // COD orders are confirmed immediately
+      subtotal: calculatedSubtotal,
+      shippingCost,
+      tax,
+      total,
+      appliedCoupons: processedCoupons,
+      totalDiscount,
+      notes: notes || 'Cash on Delivery order',
+      estimatedDelivery: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
+    });
+    
+    await order.save();
+    
+    // Clear user's cart after successful order creation (if exists)
+    await Cart.findOneAndUpdate(
+      { user: req.user.id }, 
+      { items: [], total: 0 },
+      { upsert: false }
+    );
+    
+    // Update user order count
+    await User.findByIdAndUpdate(req.user.id, { $inc: { orders: 1 } });
+    
+    await order.populate('user', 'name email');
+    
+    // Send invoice email to customer
+    try {
+      const invoiceData = {
+        orderId: order._id,
+        orderNumber: order.orderNumber,
+        date: order.createdAt,
+        customerName: order.shippingAddress?.fullName || order.user?.name || 'Customer',
+        customerEmail: order.user?.email || 'customer@example.com',
+        shippingAddress: order.shippingAddress,
+        items: order.items.map(item => ({
+          name: item.name,
+          quantity: item.quantity,
+          price: item.price,
+          total: item.quantity * item.price
+        })),
+        subtotal: order.subtotal || 0,
+        shippingCost: order.shippingCost || 0,
+        discount: order.totalDiscount || 0,
+        totalAmount: order.total || 0,
+        paymentMethod: order.paymentMethod
+      };
+      
+      await emailService.sendInvoiceEmail(
+        order.user.email,
+        invoiceData,
+        order.shippingAddress?.fullName || order.user?.name || 'Customer'
+      );
+    } catch (emailError) {
+      console.error('Failed to send invoice email:', emailError);
+      // Don't fail the order creation if email fails
+    }
+    
+    res.status(201).json({
+      message: 'COD order created successfully',
+      order: order
+    });
+  } catch (error) {
+    console.error('COD order creation error:', error);
+    res.status(500).json({ message: "Error creating COD order", error: error.message });
+  }
+};
 
 // Create a new order directly from checkout data
 exports.createOrder = async (req, res) => {

@@ -30,9 +30,9 @@ const Contact: React.FC = () => {
       <section className="bg-gradient-to-br from-primary-50 to-primary-100 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center animate-fade-in">
-            <h1 className="text-4xl md:text-6xl font-bold text-primary-950 mb-6">Get in Touch</h1>
+            <h1 className="text-4xl md:text-6xl font-bold text-primary-950 mb-6">Contact Us</h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+              We're here to help with any questions about our products or services. Reach out to our team for assistance with orders, sizing, or general inquiries.
             </p>
           </div>
         </div>
@@ -52,11 +52,11 @@ const Contact: React.FC = () => {
                     <MapPin className="w-6 h-6 text-primary-950" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-800 mb-1">Address</h3>
+                    <h3 className="text-lg font-semibold text-gray-800 mb-1">Our Address</h3>
                     <p className="text-gray-600">
-                      Solewaale, Satpur Colony<br />
-                      Satpur Nashik-07<br />
-                      India
+                      You'll find us at Solewaale<br />
+                      Satpur Colony, Satpur Nashik-07<br />
+                      Maharashtra, India
                     </p>
                   </div>
                 </div>
@@ -68,6 +68,7 @@ const Contact: React.FC = () => {
                   <div>
                     <h3 className="text-lg font-semibold text-gray-800 mb-1">Phone</h3>
                     <p className="text-gray-600">+91 7709897723</p>
+                    <p className="text-sm text-gray-500 mt-1">Available during business hours</p>
                   </div>
                 </div>
 
@@ -78,7 +79,8 @@ const Contact: React.FC = () => {
                   <div>
                     <h3 className="text-lg font-semibold text-gray-800 mb-1">Email</h3>
                     <p className="text-gray-600">hello@solewaale.com</p>
-                <p className="text-gray-600">support@solewaale.com</p>
+                    <p className="text-gray-600">support@solewaale.com</p>
+                    <p className="text-sm text-gray-500 mt-1">We respond within 24 hours</p>
                   </div>
                 </div>
 
@@ -91,13 +93,14 @@ const Contact: React.FC = () => {
                     <p className="text-gray-600">Monday - Friday: 9:00 AM - 6:00 PM</p>
                     <p className="text-gray-600">Saturday: 10:00 AM - 4:00 PM</p>
                     <p className="text-gray-600">Sunday: Closed</p>
+                    <p className="text-sm text-gray-500 mt-1">Email inquiries welcome 24/7</p>
                   </div>
                 </div>
               </div>
 
               {/* Interactive Map */}
               <div className="mt-8">
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">Find Us Here</h3>
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">Store Location</h3>
                 <div className="w-full h-64 bg-gray-100 rounded-lg overflow-hidden shadow-lg">
                   <iframe
                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3749.8234567890123!2d73.7898765!3d19.9876543!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bddd290b09914b3%3A0x2b2b2b2b2b2b2b2b!2sSatpur%2C%20Nashik%2C%20Maharashtra%2C%20India!5e0!3m2!1sen!2sus!4v1234567890123!5m2!1sen!2sus"
@@ -114,7 +117,7 @@ const Contact: React.FC = () => {
                   <div className="flex items-center space-x-2">
                     <MapPin className="w-5 h-5 text-primary-600" />
                     <div>
-                      <p className="text-sm font-medium text-primary-800">Visit Our Store</p>
+                      <p className="text-sm font-medium text-primary-800">Visit our store</p>
                       <p className="text-sm text-primary-600">Solewaale, Satpur Colony, Satpur Nashik-07, India</p>
                     </div>
                   </div>
@@ -143,7 +146,7 @@ const Contact: React.FC = () => {
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                      <label htmlFor="name" className="block text-base font-medium text-gray-700 mb-2">
                         Full Name *
                       </label>
                       <input
@@ -154,12 +157,12 @@ const Contact: React.FC = () => {
                         onChange={handleChange}
                         required
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
-                        placeholder="Your full name"
+                        placeholder="Enter your full name"
                       />
                     </div>
 
                     <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                      <label htmlFor="email" className="block text-base font-medium text-gray-700 mb-2">
                         Email Address *
                       </label>
                       <input
@@ -170,13 +173,13 @@ const Contact: React.FC = () => {
                         onChange={handleChange}
                         required
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
-                        placeholder="your@email.com"
+                        placeholder="Enter your email address"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="subject" className="block text-base font-medium text-gray-700 mb-2">
                       Subject *
                     </label>
                     <select
@@ -189,15 +192,15 @@ const Contact: React.FC = () => {
                     >
                       <option value="">Select a subject</option>
                       <option value="general">General Inquiry</option>
-                      <option value="product">Product Question</option>
+                      <option value="product">Product Information</option>
                       <option value="support">Customer Support</option>
-                      <option value="partnership">Partnership</option>
+                      <option value="partnership">Business Partnership</option>
                       <option value="other">Other</option>
                     </select>
                   </div>
 
                   <div>
-                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="message" className="block text-base font-medium text-gray-700 mb-2">
                       Message *
                     </label>
                     <textarea
@@ -208,7 +211,7 @@ const Contact: React.FC = () => {
                       required
                       rows={6}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
-                      placeholder="Tell us how we can help you..."
+                      placeholder="Enter your message here..."
                     />
                   </div>
 
@@ -241,7 +244,7 @@ const Contact: React.FC = () => {
               Frequently Asked Questions
             </h2>
             <p className="text-lg text-gray-600 animate-fade-in">
-              Quick answers to common questions about our products and services.
+              Find answers to common questions about our products and services.
             </p>
           </div>
 
@@ -249,19 +252,19 @@ const Contact: React.FC = () => {
             {[
               {
                 question: "What is your return policy?",
-                answer: "We offer a 30-day return policy for all unused items in original packaging. Returns are free for defective products."
+                answer: "We offer a 30-day return policy for unworn items in original packaging. For defective products, we cover return shipping costs."
               },
               {
-                question: "How long does shipping take?",
-                answer: "Standard shipping takes 3-7 business days. Express shipping options are available for 1-2 day delivery."
+                question: "What are your shipping times?",
+                answer: "Standard shipping typically takes 3-7 business days. Express shipping options are available for delivery within 1-2 business days."
               },
               {
-                question: "Do you offer international shipping?",
-                answer: "Yes, we ship to over 50 countries worldwide. Shipping costs and delivery times vary by location."
+                question: "Do you ship internationally?",
+                answer: "Yes, we ship to over 50 countries worldwide. Shipping costs and delivery times vary by destination."
               },
               {
-                question: "Are your products authentic?",
-                answer: "Absolutely. We work directly with manufacturers and authorized distributors to ensure all products are 100% authentic."
+                question: "What types of products do you sell?",
+                answer: "We specialize in high-quality imported footwear and fashion-inspired designs. Our products are carefully curated for style and quality."
               }
             ].map((faq, index) => (
               <div key={index} className="bg-white rounded-lg shadow-sm p-6 animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>

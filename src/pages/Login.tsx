@@ -343,7 +343,7 @@ const Login = () => {
     return (
       <>
         <div className="space-y-2">
-          <label htmlFor="password" className="block text-sm font-semibold text-gray-700">
+          <label htmlFor="password" className="block text-base font-semibold text-gray-700">
             Password
           </label>
           <div className="relative group">
@@ -378,7 +378,7 @@ const Login = () => {
         </div>
         {!isLogin && (
           <div className="space-y-2">
-            <label htmlFor="confirmPassword" className="block text-sm font-semibold text-gray-700">
+            <label htmlFor="confirmPassword" className="block text-base font-semibold text-gray-700">
               Confirm Password
             </label>
             <div className="relative group">
@@ -437,7 +437,7 @@ const Login = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-primary-50 to-primary-100 flex items-center justify-center py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full animate-scale-in">
         <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/20 p-8 sm:p-10">
           <div className="text-center mb-8">
@@ -469,7 +469,7 @@ const Login = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             {!isLogin && (
               <div className="space-y-2">
-                <label htmlFor="name" className="block text-sm font-semibold text-gray-700">
+                <label htmlFor="name" className="block text-base font-semibold text-gray-700">
                   Full Name
                 </label>
                 <div className="relative group">
@@ -498,7 +498,7 @@ const Login = () => {
 
             {isLogin && loginMethod === 'otp' ? (
               <div className="space-y-2">
-                <label htmlFor="phone" className="block text-sm font-semibold text-gray-700">
+                <label htmlFor="phone" className="block text-base font-semibold text-gray-700">
                   Phone Number
                 </label>
                 <div className="relative group">
@@ -525,7 +525,7 @@ const Login = () => {
               </div>
             ) : (
               <div className="space-y-2">
-                <label htmlFor="email" className="block text-sm font-semibold text-gray-700">
+                <label htmlFor="email" className="block text-base font-semibold text-gray-700">
                   Email Address
                 </label>
                 <div className="relative group">
@@ -554,7 +554,7 @@ const Login = () => {
 
             {isLogin && loginMethod === 'otp' && otpSent ? (
               <div className="space-y-2">
-                <label htmlFor="otp" className="block text-sm font-semibold text-gray-700">
+                <label htmlFor="otp" className="block text-base font-semibold text-gray-700">
                   OTP Code
                 </label>
                 <div className="relative group">
@@ -608,7 +608,7 @@ const Login = () => {
                     onChange={(e) => setRememberMe(e.target.checked)}
                     className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
                   />
-                  <label htmlFor="remember" className="ml-2 block text-sm text-gray-700">
+                  <label htmlFor="remember" className="ml-2 block text-base text-gray-700">
                     Remember me
                   </label>
                 </div>
@@ -656,7 +656,7 @@ const Login = () => {
                 <button
                   type="button"
                   onClick={() => setLoginMethod('email')}
-                  className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  className={`flex-1 py-2 px-4 rounded-lg text-base font-medium transition-all duration-200 ${
                     loginMethod === 'email'
                       ? 'bg-white text-primary-600 shadow-sm'
                       : 'text-gray-600 hover:text-gray-800'
@@ -668,7 +668,7 @@ const Login = () => {
                 <button
                   type="button"
                   onClick={() => setLoginMethod('otp')}
-                  className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  className={`flex-1 py-2 px-4 rounded-lg text-base font-medium transition-all duration-200 ${
                     loginMethod === 'otp'
                       ? 'bg-white text-primary-600 shadow-sm'
                       : 'text-gray-600 hover:text-gray-800'

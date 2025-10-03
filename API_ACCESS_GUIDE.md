@@ -3,7 +3,7 @@
 ## 🔑 Access Token for API Testing
 
 ### Admin Credentials
-- **Email**: `admin@luxora.com`
+- **Email**: `admin@solewaale.com`
 - **Password**: `admin123`
 - **Server URL**: `http://localhost:5000`
 
@@ -68,7 +68,7 @@ curl -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4
 If your token expires, use this PowerShell command to get a new one:
 
 ```powershell
-$body = @{ email = 'admin@luxora.com'; password = 'admin123' } | ConvertTo-Json
+$body = @{ email = 'admin@solewaale.com'; password = 'admin123' } | ConvertTo-Json
 $response = Invoke-RestMethod -Uri 'http://localhost:5000/api/users/login' -Method POST -Body $body -ContentType 'application/json'
 Write-Host "New Token: $($response.token)"
 ```

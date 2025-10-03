@@ -174,28 +174,32 @@ const ProductRecommendations: React.FC<ProductRecommendationsProps> = ({
   }
 
   return (
-    <div className={`bg-white rounded-lg shadow-sm p-6 ${className}`}>
+    <div className={`bg-gradient-to-br from-primary-50 to-primary-100 rounded-lg shadow-lg border border-primary-200 p-6 ${className}`}>
       <div className="mb-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+        <h3 className="text-lg font-semibold text-primary-900 mb-2 flex items-center gap-2">
+          <div className="w-2 h-2 bg-primary-500 rounded-full animate-pulse"></div>
           {user ? 'Recommended for You' : 'Trending Products'}
         </h3>
-        <p className="text-sm text-gray-600">{recommendations.message}</p>
+        <p className="text-sm text-primary-700">{recommendations.message}</p>
       </div>
 
       {/* Size and Color Recommendations */}
       {(recommendations.recommendedSizes?.length > 0 || recommendations.recommendedColors?.length > 0) && (
-        <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-          <h4 className="text-md font-medium text-gray-900 mb-3">Size & Color Recommendations</h4>
+        <div className="mb-6 p-4 bg-gradient-to-r from-primary-100 to-secondary-100 rounded-lg border border-primary-200 shadow-sm">
+          <h4 className="text-md font-medium text-primary-900 mb-3 flex items-center gap-2">
+            <div className="w-1.5 h-1.5 bg-primary-600 rounded-full"></div>
+            Size & Color Recommendations
+          </h4>
           
           {recommendations.recommendedSizes?.length > 0 && (
             <div className="mb-3">
-              <p className="text-sm text-gray-600 mb-2">Recommended Sizes:</p>
+              <p className="text-sm text-primary-700 mb-2 font-medium">Recommended Sizes:</p>
               <div className="flex flex-wrap gap-2">
                 {recommendations.recommendedSizes.map((size, index) => (
                   <button
                     key={index}
                     onClick={() => onSizeSelect?.(size)}
-                    className="px-3 py-1 text-sm bg-white border border-gray-300 rounded-md hover:bg-primary-50 hover:border-primary-300 transition-colors"
+                    className="px-3 py-1 text-sm bg-gradient-to-r from-primary-500 to-primary-600 text-white border border-primary-600 rounded-md hover:from-primary-600 hover:to-primary-700 hover:shadow-md transform hover:scale-105 transition-all duration-200 font-medium"
                   >
                     {size}
                   </button>
@@ -206,13 +210,13 @@ const ProductRecommendations: React.FC<ProductRecommendationsProps> = ({
           
           {recommendations.recommendedColors?.length > 0 && (
             <div>
-              <p className="text-sm text-gray-600 mb-2">Recommended Colors:</p>
+              <p className="text-sm text-primary-700 mb-2 font-medium">Recommended Colors:</p>
               <div className="flex flex-wrap gap-2">
                 {recommendations.recommendedColors.map((color, index) => (
                   <button
                     key={index}
                     onClick={() => onColorSelect?.(color)}
-                    className="px-3 py-1 text-sm bg-white border border-gray-300 rounded-md hover:bg-primary-50 hover:border-primary-300 transition-colors capitalize"
+                    className="px-3 py-1 text-sm bg-gradient-to-r from-secondary-500 to-secondary-600 text-white border border-secondary-600 rounded-md hover:from-secondary-600 hover:to-secondary-700 hover:shadow-md transform hover:scale-105 transition-all duration-200 font-medium capitalize"
                   >
                     {color}
                   </button>
@@ -224,12 +228,18 @@ const ProductRecommendations: React.FC<ProductRecommendationsProps> = ({
       )}
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {recommendations.recommendedProducts.map((product) => (
+        {recommendations.recommendedProducts.map((product, index) => (
           <Link
             key={product._id}
             to={`/product/${product._id}`}
-            className="group block bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow duration-200"
+            className="group block bg-white border-2 border-primary-200 rounded-lg overflow-hidden hover:shadow-xl hover:border-primary-400 hover:-translate-y-1 transition-all duration-300 relative"
+            style={{
+              animationDelay: `${index * 100}ms`,
+              animation: 'fadeInUp 0.6s ease-out forwards'
+            }}
           >
+            {/* Brand color accent */}
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-500 to-secondary-500"></div>
             <div className="aspect-square overflow-hidden bg-gray-100">
               <img
                 src={product.images[0] || '/assets/product-placeholder.svg'}
@@ -238,16 +248,22 @@ const ProductRecommendations: React.FC<ProductRecommendationsProps> = ({
               />
             </div>
             <div className="p-3">
-              <h4 className="text-sm font-medium text-gray-900 mb-1 line-clamp-2">
+              <h4 className="text-sm font-medium text-primary-900 mb-1 line-clamp-2 group-hover:text-primary-700 transition-colors duration-200">
                 {product.name}
               </h4>
-              <p className="text-xs text-gray-500 mb-2">
+              <p className="text-xs text-primary-600 mb-2 font-medium">
                 {product.category?.name} {product.brand && `• ${product.brand}`}
               </p>
               <div className="flex items-center justify-between">
-                <span className="text-sm font-semibold text-gray-900">
+                <span className="text-sm font-bold text-primary-800 bg-primary-100 px-2 py-1 rounded-md">
                   ₹{product.price}
                 </span>
+                {product.rating && (
+                  <div className="flex items-center gap-1">
+                    <div className="w-3 h-3 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-full"></div>
+                    <span className="text-xs text-primary-700 font-medium">{product.rating}</span>
+                  </div>
+                )}
               </div>
             </div>
           </Link>

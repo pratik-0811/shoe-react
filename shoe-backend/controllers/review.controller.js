@@ -11,7 +11,7 @@ const sendResponse = (res, statusCode, success, message, data = {}) => {
 // Create a new review
 const createReview = async (req, res) => {
   try {
-    const { productId, rating, title, comment, userId, userName, userEmail } = req.body;
+    const { productId, rating, title, comment } = req.body;
     const user = req.user;
 
     // Validate request body
@@ -27,7 +27,7 @@ const createReview = async (req, res) => {
     }
 
     // Check if user has already reviewed this product
-    const existingReview = await Review.findOne({ userId, productId });
+    const existingReview = await Review.findOne({ userId: user._id, productId });
     if (existingReview) {
       return sendResponse(res, 400, false, 'You have already reviewed this product');
     }
@@ -47,9 +47,9 @@ const createReview = async (req, res) => {
     // Create new review with comprehensive user details
     const review = new Review({
       productId,
-      userId,
-      userName,
-      userEmail,
+      userId: user._id,
+      userName: user.name,
+      userEmail: user.email,
       userAvatar: user?.avatar,
       rating,
       title,

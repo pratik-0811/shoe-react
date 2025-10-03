@@ -265,10 +265,11 @@ exports.removeFromCart = async (req, res) => {
 // Clear cart
 exports.clearCart = async (req, res) => {
   try {
-    // Find user\'s cart
+    // Find user's cart
     const cart = await Cart.findOne({ user: req.user.id });
     if (!cart) {
-      return res.status(404).json({ message: "Cart not found" });
+      // If no cart exists, consider it already cleared
+      return res.status(200).json({ message: "Cart already cleared" });
     }
     
     // Clear cart items and reset total

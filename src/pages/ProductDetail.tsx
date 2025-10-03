@@ -354,14 +354,14 @@ const ProductDetail = React.memo(() => {
               {/* Sizes */}
               {product.sizes && product.sizes.length > 0 && (
                 <div>
-                  <h4 className="text-sm font-semibold text-gray-800 mb-2">Available Sizes:</h4>
+                  <h4 className="text-base font-semibold text-gray-800 mb-2">Available Sizes:</h4>
                   <div className="flex flex-wrap gap-2">
                     {product.sizes.map((size, idx) => (
                       <button
                         key={idx}
                         onClick={() => size.stock > 0 && handleSizeSelect(size.size)}
                         disabled={size.stock === 0}
-                        className={`px-3 py-2 border rounded-lg text-sm font-medium transition-colors ${
+                        className={`px-3 py-2 border rounded-lg text-base font-medium transition-colors ${
                           selectedSize === size.size
                             ? 'border-primary-500 bg-primary-50 text-primary-700'
                             : size.stock > 0 
@@ -388,7 +388,7 @@ const ProductDetail = React.memo(() => {
               {/* Colors */}
               {product.colors && product.colors.length > 0 && (
                 <div>
-                  <h4 className="text-sm font-semibold text-gray-800 mb-2">Available Colors:</h4>
+                  <h4 className="text-base font-semibold text-gray-800 mb-2">Available Colors:</h4>
                   <div className="flex flex-wrap gap-3">
                     {product.colors.map((color, idx) => (
                       <button
@@ -552,7 +552,7 @@ const ProductDetail = React.memo(() => {
                   {addingToCart ? (
                     <>
                       <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      <span>Adding...</span>
+                      <span>Adding to cart...</span>
                     </>
                   ) : (
                     <>
@@ -575,7 +575,7 @@ const ProductDetail = React.memo(() => {
                 }`}
               >
                 <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-current' : ''}`} />
-                <span>{isWishlisted ? 'In Wishlist' : 'Add to Wishlist'}</span>
+                <span>{isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}</span>
               </button>
               <button className="flex items-center space-x-2 px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium">
                 <Share2 className="w-4 h-4" />
@@ -634,9 +634,8 @@ const ProductDetail = React.memo(() => {
                 <h3 className="text-xl font-semibold text-gray-800 mb-4">Product Description</h3>
                 <p className="text-gray-600 leading-relaxed mb-6">{product.description}</p>
                 <p className="text-gray-600 leading-relaxed">
-                  This premium product represents the perfect blend of style, functionality, and quality craftsmanship. 
-                  Each item is carefully selected to meet our high standards and provide you with an exceptional experience 
-                  that will last for years to come.
+                  This product combines exceptional style with superior functionality. Crafted with attention to detail and quality materials, 
+                  it represents our commitment to delivering premium footwear that meets the highest standards of comfort and durability.
                 </p>
               </div>
             )}
@@ -671,7 +670,7 @@ const ProductDetail = React.memo(() => {
                   <div>
                     <h4 className="font-semibold text-gray-800 mb-4">Shipping Information</h4>
                     <ul className="space-y-2 text-gray-600">
-                      <li>• Free standard shipping on orders over ₹1000</li>
+                      <li>• Free shipping on orders over ₹1000</li>
                       <li>• Express shipping available for ₹50</li>
                       <li>• Standard delivery: 3-7 business days</li>
                       <li>• Express delivery: 1-2 business days</li>
@@ -682,9 +681,9 @@ const ProductDetail = React.memo(() => {
                     <h4 className="font-semibold text-gray-800 mb-4">Return Policy</h4>
                     <ul className="space-y-2 text-gray-600">
                       <li>• 30-day return window</li>
-                      <li>• Items must be in original condition</li>
+                      <li>• Items must be unworn with original packaging</li>
                       <li>• Free returns for defective items</li>
-                      <li>• Return shipping: ₹50 (deducted from refund)</li>
+                      <li>• Return shipping fee: ₹50 (deducted from refund)</li>
                       <li>• Refunds processed within 5-7 business days</li>
                     </ul>
                   </div>

@@ -871,11 +871,11 @@ const UserProfile: React.FC = () => {
                   
                   {/* Mobile: Horizontal grid */}
                   <div className="grid grid-cols-3 gap-2 sm:hidden">
-                    <div className="flex flex-col items-center p-2 bg-blue-50 rounded-lg">
-                      <Package className="w-4 h-4 text-blue-600 mb-1" />
-                      <span className="text-lg font-bold text-blue-600">{userStats.orderCount}</span>
-                      <span className="text-xs font-medium text-gray-700 text-center">Orders</span>
-                    </div>
+                    <div className="flex flex-col items-center p-2 bg-primary-50 rounded-lg">
+                    <Package className="w-4 h-4 text-primary-600 mb-1" />
+                    <span className="text-lg font-bold text-primary-600">{userStats.orderCount}</span>
+                    <span className="text-xs font-medium text-gray-700 text-center">Orders</span>
+                  </div>
                     <div className="flex flex-col items-center p-2 bg-red-50 rounded-lg">
                       <Heart className="w-4 h-4 text-red-600 mb-1" />
                       <span className="text-lg font-bold text-red-600">{wishlistCount}</span>
@@ -890,12 +890,12 @@ const UserProfile: React.FC = () => {
                   
                   {/* Desktop: Vertical list */}
                   <div className="hidden sm:block space-y-4">
-                    <div className="flex items-center justify-between p-3 bg-blue-50 rounded-xl">
+                    <div className="flex items-center justify-between p-3 bg-primary-50 rounded-xl">
                       <div className="flex items-center gap-3">
-                        <Package className="w-5 h-5 text-blue-600" />
+                        <Package className="w-5 h-5 text-primary-600" />
                         <span className="font-medium text-gray-700">Total Orders</span>
                       </div>
-                      <span className="text-xl font-bold text-blue-600">{userStats.orderCount}</span>
+                      <span className="text-xl font-bold text-primary-600">{userStats.orderCount}</span>
                     </div>
                     <div className="flex items-center justify-between p-3 bg-red-50 rounded-xl">
                       <div className="flex items-center gap-3">
@@ -1057,11 +1057,11 @@ const UserProfile: React.FC = () => {
                             )}
                           </div>
                           {order.shippingAddress && (
-                            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-xl p-4 mb-3 group-hover:from-blue-100 group-hover:to-indigo-100 group-hover:border-blue-200 transition-all duration-500 relative overflow-hidden">
-                              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-indigo-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-700 origin-left"></div>
+                            <div className="bg-gradient-to-r from-primary-50 to-primary-100 border border-primary-200 rounded-xl p-4 mb-3 group-hover:from-primary-100 group-hover:to-primary-200 group-hover:border-primary-300 transition-all duration-500 relative overflow-hidden">
+                              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-400 to-primary-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-700 origin-left"></div>
                               <div className="flex items-center gap-2 mb-2">
-                                <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-                                <p className="text-xs font-semibold text-blue-800 uppercase tracking-wide">Shipping Address</p>
+                                <div className="w-2 h-2 bg-primary-500 rounded-full animate-pulse"></div>
+                                <p className="text-xs font-semibold text-primary-800 uppercase tracking-wide">Shipping Address</p>
                               </div>
                               <p className="text-sm text-gray-700 leading-relaxed">
                                 {order.shippingAddress.fullName && <span className="font-semibold text-gray-900">{order.shippingAddress.fullName}<br /></span>}
@@ -1121,7 +1121,7 @@ const UserProfile: React.FC = () => {
                           <div className="flex items-center gap-2">
                             <span className={`inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-1.5 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 relative overflow-hidden ${
                               order.orderStatus === 'delivered' ? 'bg-gradient-to-r from-emerald-500 via-green-500 to-emerald-600 text-white border-2 border-emerald-300' :
-                              order.orderStatus === 'shipped' ? 'bg-gradient-to-r from-blue-500 via-sky-500 to-blue-600 text-white border-2 border-blue-300' :
+                              order.orderStatus === 'shipped' ? 'bg-gradient-to-r from-primary-500 via-primary-600 to-primary-700 text-white border-2 border-primary-300' :
                               order.orderStatus === 'processing' ? 'bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600 text-white border-2 border-amber-300' :
                               order.orderStatus === 'confirmed' ? 'bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-600 text-white border-2 border-indigo-300' :
                               order.orderStatus === 'cancelled' ? 'bg-gradient-to-r from-red-500 via-rose-500 to-red-600 text-white border-2 border-red-300' :
@@ -1131,7 +1131,7 @@ const UserProfile: React.FC = () => {
                               <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 transform -skew-x-12 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
                               <div className={`w-1.5 h-1.5 sm:w-2.5 sm:h-2.5 rounded-full animate-pulse relative z-10 ${
                                 order.orderStatus === 'delivered' ? 'bg-emerald-200 shadow-lg shadow-emerald-300/50' :
-                                order.orderStatus === 'shipped' ? 'bg-blue-200 shadow-lg shadow-blue-300/50' :
+                                order.orderStatus === 'shipped' ? 'bg-primary-200 shadow-lg shadow-primary-300/50' :
                                 order.orderStatus === 'processing' ? 'bg-amber-200 shadow-lg shadow-amber-300/50' :
                                 order.orderStatus === 'confirmed' ? 'bg-indigo-200 shadow-lg shadow-indigo-300/50' :
                                 order.orderStatus === 'cancelled' ? 'bg-red-200 shadow-lg shadow-red-300/50' :
@@ -1370,7 +1370,7 @@ const UserProfile: React.FC = () => {
                 </h2>
                 <button
                   onClick={() => setShowAddressManagement(true)}
-                  className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-3 rounded-xl hover:from-blue-700 hover:to-indigo-700 flex items-center gap-2 shadow-lg hover:shadow-xl transition-all duration-300 font-semibold"
+                  className="bg-gradient-to-r from-primary-600 to-primary-700 text-white px-6 py-3 rounded-xl hover:from-primary-700 hover:to-primary-800 flex items-center gap-2 shadow-lg hover:shadow-xl transition-all duration-300 font-semibold"
                 >
                   <Plus className="w-5 h-5" />
                   Manage Addresses
@@ -1402,9 +1402,9 @@ const UserProfile: React.FC = () => {
                         <div className="p-4 space-y-3">
                           <div className="h-4 bg-gradient-to-r from-gray-200 to-gray-300 rounded animate-pulse" style={{width: `${60 + Math.random() * 30}%`}}></div>
                           <div className="h-3 bg-gradient-to-r from-gray-200 to-gray-300 rounded animate-pulse" style={{width: `${40 + Math.random() * 20}%`}}></div>
-                          <div className="h-6 bg-gradient-to-r from-blue-200 to-blue-300 rounded animate-pulse" style={{width: '80%'}}></div>
+                          <div className="h-6 bg-gradient-to-r from-primary-200 to-primary-300 rounded animate-pulse" style={{width: '80%'}}></div>
                           <div className="flex gap-2">
-                            <div className="flex-1 h-8 bg-gradient-to-r from-blue-200 to-blue-300 rounded-lg animate-pulse"></div>
+                            <div className="flex-1 h-8 bg-gradient-to-r from-primary-200 to-primary-300 rounded-lg animate-pulse"></div>
                             <div className="w-10 h-8 bg-gradient-to-r from-red-200 to-red-300 rounded-lg animate-pulse"></div>
                           </div>
                         </div>
@@ -1412,12 +1412,12 @@ const UserProfile: React.FC = () => {
                     ))}
                   </div>
                   <div className="text-center py-8">
-                    <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
+                    <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-primary-50 to-primary-100 rounded-xl border border-primary-200">
                       <div className="relative">
-                        <div className="w-6 h-6 border-2 border-blue-300 border-t-blue-600 rounded-full animate-spin"></div>
-                        <div className="absolute inset-0 w-6 h-6 border-2 border-transparent border-t-blue-400 rounded-full animate-spin" style={{animationDirection: 'reverse', animationDuration: '1.5s'}}></div>
+                        <div className="w-6 h-6 border-2 border-primary-300 border-t-primary-600 rounded-full animate-spin"></div>
+                        <div className="absolute inset-0 w-6 h-6 border-2 border-transparent border-t-primary-400 rounded-full animate-spin" style={{animationDirection: 'reverse', animationDuration: '1.5s'}}></div>
                       </div>
-                      <span className="text-blue-700 font-medium">Loading your wishlist...</span>
+                      <span className="text-primary-700 font-medium">Loading your wishlist...</span>
                     </div>
                   </div>
                 </div>
@@ -1917,7 +1917,7 @@ const UserProfile: React.FC = () => {
               </div>
               
               <div className="space-y-4">
-                <div className="bg-gradient-to-r from-primary-50 to-blue-50 rounded-xl p-4 border border-primary-100">
+                <div className="bg-gradient-to-r from-primary-50 to-primary-100 rounded-xl p-4 border border-primary-100">
                   <div className="flex items-center gap-3 mb-3">
                     <Phone className="w-5 h-5 text-primary-600" />
                     <h4 className="font-semibold text-gray-900">Contact Support</h4>

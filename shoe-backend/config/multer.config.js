@@ -159,7 +159,7 @@ const cleanupOldFiles = (uploadType, daysOld = 30) => {
       
       if (stats.mtime.getTime() < cutoffTime) {
         fs.unlinkSync(filePath);
-        console.log(`Cleaned up old file: ${file}`);
+
       }
     });
   } catch (error) {

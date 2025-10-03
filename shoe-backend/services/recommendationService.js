@@ -13,7 +13,7 @@ class RecommendationService {
     try {
       // Validate userId format
       if (!userId || typeof userId !== 'string') {
-        console.log('Invalid userId provided:', userId);
+    
         const defaultRecs = this.getDefaultRecommendations();
         return {
           recommendedSizes: defaultRecs.recommendedSizes,
@@ -98,7 +98,7 @@ class RecommendationService {
       
       // If it's a MongoDB casting error, return default recommendations
       if (error.name === 'CastError' || error.message.includes('Cast to ObjectId failed')) {
-        console.log('MongoDB casting error, returning default recommendations');
+  
         const defaultRecs = this.getDefaultRecommendations();
         return {
           recommendedSizes: defaultRecs.recommendedSizes,
@@ -108,7 +108,7 @@ class RecommendationService {
       }
       
       // For other errors, also return default recommendations instead of throwing
-      console.log('Returning default recommendations due to error');
+
       const defaultRecs = this.getDefaultRecommendations();
       return {
         recommendedSizes: defaultRecs.recommendedSizes,
@@ -160,7 +160,7 @@ class RecommendationService {
       console.error('Error getting guest recommendations:', error);
       
       // Return default recommendations instead of throwing error
-      console.log('Returning default recommendations due to guest recommendations error');
+
       const defaultRecs = this.getDefaultRecommendations();
       return {
         recommendedSizes: defaultRecs.recommendedSizes,
@@ -201,7 +201,7 @@ class RecommendationService {
       console.error('Error getting enhanced recommendations:', error);
       
       // If it's a MongoDB casting error or any other error, return default recommendations
-      console.log('Returning default recommendations due to enhanced recommendations error');
+
       const defaultRecs = this.getDefaultRecommendations();
       return {
         recommendedSizes: defaultRecs.recommendedSizes,
@@ -386,7 +386,7 @@ class RecommendationService {
       });
 
       if (!categoryDoc) {
-        console.log(`Category '${category}' not found`);
+  
         return { popularSizes: [], popularColors: [] };
       }
 

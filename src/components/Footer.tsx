@@ -41,7 +41,7 @@ const Footer: React.FC = () => {
               <span className="text-xl font-bold">Solewaale</span>
             </div>
             <p className="text-primary-100 mb-4">
-              Step into style with our premium collection of shoes crafted for comfort and performance.
+              Step into style with our premium collection of imported shoes curated for comfort and performance.
             </p>
             <div className="flex space-x-4">
               <div className="w-8 h-8 bg-primary-800 rounded-full flex items-center justify-center hover:bg-primary-700 cursor-pointer transition-colors">

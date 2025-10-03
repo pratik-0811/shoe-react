@@ -137,21 +137,19 @@ const mongoOptions = {
 // Enhanced MongoDB connection with monitoring and error handling
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/shoe-store", mongoOptions)
   .then(() => {
-    console.log("MongoDB connection established successfully");
-    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-    console.log(`Connection Pool - Max: ${mongoOptions.maxPoolSize}, Min: ${mongoOptions.minPoolSize}`);
-    console.log(`Database: ${mongoose.connection.name}`);
+    // MongoDB connection established successfully
+    // Environment and connection pool info logged
   })
   .catch(err => {
     console.error("MongoDB connection error:", err);
-    console.log("⚠️  Running in demo mode without database - some features may be limited");
+    // Running in demo mode without database - some features may be limited
     logger.error('Failed to connect to MongoDB', { error: err.message, stack: err.stack });
     // Don't exit - continue running in demo mode
   });
 
 // MongoDB connection event handlers for monitoring
 mongoose.connection.on('connected', () => {
-  console.log('Mongoose connected to MongoDB');
+  // Mongoose connected to MongoDB
   logger.info('MongoDB connection established');
 });
 
@@ -161,12 +159,12 @@ mongoose.connection.on('error', (err) => {
 });
 
 mongoose.connection.on('disconnected', () => {
-  console.log('Mongoose disconnected from MongoDB');
+  // Mongoose disconnected from MongoDB
   logger.warn('MongoDB connection lost');
 });
 
 mongoose.connection.on('reconnected', () => {
-  console.log('Mongoose reconnected to MongoDB');
+  // Mongoose reconnected to MongoDB
   logger.info('MongoDB connection restored');
 });
 
@@ -221,13 +219,12 @@ app.use(errorHandler);
 
 // Start server
 const server = app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`API Documentation available at http://localhost:${PORT}/api`);
+  // Server running on port and API documentation available
 });
 
 // Graceful shutdown handling with database cleanup
 const gracefulShutdown = async (signal) => {
-  console.log(`${signal} received. Shutting down gracefully...`);
+  // Graceful shutdown initiated
   logger.info(`Graceful shutdown initiated by ${signal}`);
   
   try {
@@ -236,16 +233,16 @@ const gracefulShutdown = async (signal) => {
       await new Promise((resolve) => {
         server.close(resolve);
       });
-      console.log('HTTP server closed');
+      // HTTP server closed
       logger.info('HTTP server closed successfully');
     }
     
     // Close MongoDB connection
     await mongoose.connection.close();
-    console.log('MongoDB connection closed');
+    // MongoDB connection closed
     logger.info('MongoDB connection closed successfully');
     
-    console.log('Graceful shutdown completed');
+    // Graceful shutdown completed
     logger.info('Application shutdown completed successfully');
     process.exit(0);
   } catch (error) {

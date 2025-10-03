@@ -19,9 +19,13 @@ export interface Category {
   image?: string;
   isActive: boolean;
   sortOrder?: number;
-  parentCategory?: string;
+  parentCategory?: string | Category;
   seoTitle?: string;
   seoDescription?: string;
+  subcategories?: Category[];
+  productCount?: number;
+  featured?: boolean;
+  icon?: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -30,6 +34,7 @@ export interface Product {
   _id: string;
   name: string;
   price: number;
+  discounted_price?: number;
   originalPrice?: number;
   image: string;
   category: Category | string;

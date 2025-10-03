@@ -17,6 +17,7 @@ router.put("/:id/status", validateObjectId('id'), isAdmin, handleValidationError
 // User routes
 router.post("/", validateOrder, handleValidationErrors, asyncHandler(orderController.createOrder));
 router.post("/from-cart", validateOrder, handleValidationErrors, asyncHandler(orderController.createOrderFromCart));
+router.post("/cod", handleValidationErrors, asyncHandler(orderController.createCODOrder));
 router.post("/clear-cart", asyncHandler(orderController.clearCart));
 router.get("/my-orders", validatePagination, handleValidationErrors, asyncHandler(orderController.getUserOrders));
 router.get("/:id", validateObjectId('id'), handleValidationErrors, asyncHandler(orderController.getOrderById));

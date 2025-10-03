@@ -193,12 +193,8 @@ router.post('/reset-password',
         });
       }
 
-      // Hash the new password
-      const saltRounds = parseInt(process.env.BCRYPT_ROUNDS) || 12;
-      const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
-
-      // Update user password
-      user.password = hashedPassword;
+      // Update user password (will be hashed by pre-save middleware)
+      user.password = newPassword;
       user.passwordChangedAt = new Date();
       
       // Reset failed login attempts if any

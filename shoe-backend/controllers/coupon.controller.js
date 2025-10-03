@@ -393,7 +393,7 @@ const validateCoupon = async (req, res) => {
   try {
     const { code, orderTotal } = req.body;  // Changed from params to body, renamed orderAmount to orderTotal
     const userId = req.user.id;
-    console.log(code, orderTotal);
+
     if (!orderTotal || orderTotal <= 0) {
       return res.status(400).json({
         success: false,

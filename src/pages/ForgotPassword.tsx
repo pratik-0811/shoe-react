@@ -75,7 +75,7 @@ const ForgotPassword: React.FC = () => {
         setErrors({ general: response.data.message || 'An error occurred. Please try again.' });
       }
     } catch (error: any) {
-      console.error('Forgot password error:', error);
+      
       
       if (error.response?.data?.errors) {
         // Handle validation errors from backend
@@ -146,14 +146,14 @@ const ForgotPassword: React.FC = () => {
                 <div className="mt-8 space-y-4">
                   <button
                     onClick={handleTryAgain}
-                    className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                    className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-base font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
                   >
                     Try Different Email
                   </button>
                   
                   <Link
                     to="/login"
-                    className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                    className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
                   >
                     Back to Login
                   </Link>
@@ -175,10 +175,10 @@ const ForgotPassword: React.FC = () => {
       <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <div className="text-center">
-            <Mail className="mx-auto h-12 w-12 text-blue-600" />
-            <h2 className="mt-6 text-3xl font-bold text-gray-900">
-              Forgot Password?
-            </h2>
+              <Mail className="mx-auto h-12 w-12 text-primary-600" />
+              <h2 className="mt-6 text-3xl font-bold text-gray-900">
+                Forgot Password?
+              </h2>
             <p className="mt-2 text-sm text-gray-600">
               No worries! Enter your email address and we'll send you a link to reset your password.
             </p>
@@ -210,7 +210,7 @@ const ForgotPassword: React.FC = () => {
                     required
                     value={formData.email}
                     onChange={handleInputChange}
-                    className={`appearance-none block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
+                    className={`appearance-none block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm ${
                       errors.email ? 'border-red-300' : 'border-gray-300'
                     }`}
                     placeholder="Enter your email address"
@@ -227,7 +227,7 @@ const ForgotPassword: React.FC = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   {loading ? (
                     <>
@@ -246,7 +246,7 @@ const ForgotPassword: React.FC = () => {
               <div className="text-center">
                 <Link
                   to="/login"
-                  className="inline-flex items-center text-sm text-blue-600 hover:text-blue-500 transition-colors"
+                  className="inline-flex items-center text-sm text-primary-600 hover:text-primary-500 transition-colors"
                 >
                   <ArrowLeft className="h-4 w-4 mr-1" />
                   Back to Login

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { Lock, Eye, EyeOff, CheckCircle, AlertCircle, ArrowLeft } from 'lucide-react';
 import SEO from '../components/SEO';
 import api from '../services/api';
@@ -16,8 +16,12 @@ interface FormErrors {
 }
 
 const ResetPassword: React.FC = () => {
-  const { token } = useParams<{ token: string }>();
+  const { token: paramToken } = useParams<{ token: string }>();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  
+  // Get token from either URL params or query params
+  const token = paramToken || searchParams.get('token');
   
   const [formData, setFormData] = useState<FormData>({
     password: '',
@@ -51,7 +55,7 @@ const ResetPassword: React.FC = () => {
         setErrors({ general: response.data.message || 'Invalid or expired reset token.' });
       }
     } catch (error: any) {
-      console.error('Token verification error:', error);
+      
       
       if (error.response?.data?.message) {
         setErrors({ general: error.response.data.message });
@@ -69,10 +73,10 @@ const ResetPassword: React.FC = () => {
     // Password validation
     if (!formData.password) {
       newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters long';
-    } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
-      newErrors.password = 'Password must contain at least one uppercase letter, one lowercase letter, and one number';
+    } else if (formData.password.length < 8) {
+      newErrors.password = 'Password must be at least 8 characters long';
+    } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/.test(formData.password)) {
+      newErrors.password = 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character';
     }
 
     // Confirm password validation
@@ -116,7 +120,7 @@ const ResetPassword: React.FC = () => {
     try {
       const response = await api.post('/auth/reset-password', {
         token,
-        password: formData.password
+        newPassword: formData.password
       });
 
       if (response.data.success) {
@@ -135,7 +139,7 @@ const ResetPassword: React.FC = () => {
         setErrors({ general: response.data.message || 'An error occurred. Please try again.' });
       }
     } catch (error: any) {
-      console.error('Password reset error:', error);
+      
       
       if (error.response?.data?.errors) {
         // Handle validation errors from backend
@@ -225,14 +229,14 @@ const ResetPassword: React.FC = () => {
                 <div className="mt-8 space-y-4">
                   <Link
                     to="/forgot-password"
-                    className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                    className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
                   >
                     Request New Reset Link
                   </Link>
                   
                   <Link
                     to="/login"
-                    className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                    className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-base font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
                   >
                     Back to Login
                   </Link>
@@ -283,7 +287,7 @@ const ResetPassword: React.FC = () => {
                 <div className="mt-8">
                   <Link
                     to="/login"
-                    className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                    className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
                   >
                     Go to Login
                   </Link>
@@ -305,7 +309,7 @@ const ResetPassword: React.FC = () => {
       <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <div className="text-center">
-            <Lock className="mx-auto h-12 w-12 text-blue-600" />
+            <Lock className="mx-auto h-12 w-12 text-primary-600" />
             <h2 className="mt-6 text-3xl font-bold text-gray-900">
               Reset Your Password
             </h2>
@@ -403,7 +407,7 @@ const ResetPassword: React.FC = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   {loading ? (
                     <>
@@ -422,7 +426,7 @@ const ResetPassword: React.FC = () => {
               <div className="text-center">
                 <Link
                   to="/login"
-                  className="inline-flex items-center text-sm text-blue-600 hover:text-blue-500 transition-colors"
+                  className="inline-flex items-center text-sm text-primary-600 hover:text-primary-500 transition-colors"
                 >
                   <ArrowLeft className="h-4 w-4 mr-1" />
                   Back to Login

@@ -29,50 +29,50 @@ const Home = React.memo(() => {
     { icon: Truck, title: 'Free Shipping', description: 'Free delivery on orders over ₹1000 across India' },
     { icon: HeadphonesIcon, title: 'Perfect Fit Guarantee', description: 'Free size exchange within 30 days if not satisfied' },
     { icon: Award, title: 'Quality Assurance', description: '2-year warranty on all premium footwear' },
-    { icon: Users, title: 'Expert Craftsmanship', description: 'Handcrafted by skilled artisans with 20+ years experience' },
+    { icon: Users, title: 'Expert Curation', description: 'Carefully selected from top global brands with 20+ years experience' },
   ], []);
 
   const testimonials = useMemo(() => [
     {
-      name: 'Sarah Johnson',
-      role: 'Marathon Runner',
+      name: 'Arjun Patel',
+      role: 'Marathon Runner, Mumbai',
       image: '/assets/avatar-1.svg',
-      quote: 'These shoes transformed my running experience. The comfort and support are unmatched! I\'ve run 3 marathons in them.',
+      quote: 'These shoes have exceeded my expectations for long-distance running. The comfort and durability are outstanding, providing excellent support during my daily training sessions.',
       rating: 5
     },
     {
-      name: 'Michael Chen',
-      role: 'Fashion Blogger',
+      name: 'Kavya Reddy',
+      role: 'Fashion Blogger, Bangalore',
       image: '/assets/avatar-2.svg',
-      quote: 'Perfect blend of style and comfort. I get compliments every time I wear them. The craftsmanship is exceptional.',
+      quote: 'Perfect combination of style and comfort. These shoes complement my wardrobe beautifully while providing all-day comfort during long photo shoots and events.',
       rating: 5
     },
     {
-      name: 'Emma Davis',
-      role: 'Fitness Instructor',
+      name: 'Sneha Gupta',
+      role: 'Fitness Instructor, Delhi',
       image: '/assets/avatar-3.svg',
-      quote: 'Outstanding quality and durability. Worth every penny for the premium experience. My students always ask about them.',
+      quote: 'As a fitness professional, I need shoes that can handle intense daily use. These provide exceptional support and maintain their quality even after months of rigorous use.',
       rating: 5
     },
     {
       name: 'Rajesh Kumar',
-      role: 'Business Executive',
+      role: 'Business Executive, Pune',
       image: '/assets/avatar-4.svg',
-      quote: 'Professional look with all-day comfort. Perfect for long office hours and client meetings. Highly recommended!',
+      quote: 'Professional appearance with superior comfort. These shoes are perfect for long business meetings and maintain their elegant look throughout the day.',
       rating: 5
     },
     {
       name: 'Priya Sharma',
-      role: 'College Student',
+      role: 'College Student, Chennai',
       image: '/assets/avatar-5.svg',
-      quote: 'Trendy designs at affordable prices. The quality is amazing and they last really long. My friends love them too!',
+      quote: 'Excellent value for money. These shoes provide comfort for long campus walks while maintaining a trendy appearance that complements my style.',
       rating: 5
     },
     {
-      name: 'David Wilson',
-      role: 'Travel Photographer',
+      name: 'Vikram Singh',
+      role: 'Travel Photographer, Jaipur',
       image: '/assets/avatar-6.svg',
-      quote: 'Perfect for long walks and adventures. Comfortable, durable, and stylish. They\'ve been with me across 15 countries.',
+      quote: 'Reliable companion for my travels across India. These shoes handle various terrains with ease while maintaining comfort and durability in all conditions.',
       rating: 5
     }
   ], []);
@@ -229,21 +229,21 @@ const Home = React.memo(() => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center min-h-[70vh]">
               <div className="animate-fade-in text-center lg:text-left flex flex-col justify-center">
                 <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-primary-100 to-blue-100 rounded-full text-sm font-medium text-primary-800 mb-6 animate-bounce mx-auto lg:mx-0 w-fit">
-                  <Star className="w-4 h-4 mr-2 text-yellow-500" />
-                  #1 Premium Shoe Brand
-                </div>
-                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-primary-950 leading-tight mb-6 sm:mb-8">
-                  Step Into
-                  <span className="block bg-gradient-to-r from-primary-700 via-blue-600 to-purple-600 bg-clip-text text-transparent mt-2">Premium Footwear</span>
-                </h1>
-                <p className="text-lg sm:text-xl text-gray-600 mb-8 sm:mb-10 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-                  Discover our curated collection of premium shoes designed for comfort, style, and performance. From running to casual wear, find your perfect pair with cutting-edge technology.
-                </p>
+                   <Star className="w-4 h-4 mr-2 text-yellow-500" />
+                   #1 Premium Shoe Brand
+                 </div>
+                 <h1 className="text-3xl font-bold text-primary-950 leading-tight mb-6 sm:mb-8">
+                   Step Into
+                   <span className="block bg-gradient-to-r from-primary-700 via-blue-600 to-purple-600 bg-clip-text text-transparent mt-2">Premium Footwear</span>
+                 </h1>
+                 <p className="text-base text-gray-600 mb-8 sm:mb-10 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                   Discover our curated collection of premium shoes designed for comfort, style, and performance. From running to casual wear, find your perfect pair with cutting-edge technology.
+                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center lg:justify-start">
                   <Link
                     to="/products"
                     onClick={() => trackUserInteraction('Hero CTA Click', { button: 'Shop Shoes' })}
-                    className="inline-flex items-center justify-center px-8 sm:px-10 py-4 bg-gradient-to-r from-primary-950 to-primary-800 text-white rounded-xl hover:from-primary-800 hover:to-primary-700 transition-all duration-300 group touch-manipulation shadow-2xl hover:shadow-primary-500/25 transform hover:-translate-y-2 text-lg font-semibold"
+                    className="inline-flex items-center justify-center px-8 sm:px-10 py-4 bg-gradient-to-r from-primary-950 to-primary-800 text-white rounded-xl hover:from-primary-800 hover:to-primary-700 transition-all duration-300 group touch-manipulation shadow-2xl hover:shadow-primary-500/25 transform hover:-translate-y-2 text-base font-semibold"
                   >
                     Shop Shoes
                     <ArrowRight className="ml-3 w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -251,7 +251,7 @@ const Home = React.memo(() => {
                   <Link
                     to="/about"
                     onClick={() => trackUserInteraction('Hero CTA Click', { button: 'Learn More' })}
-                    className="inline-flex items-center justify-center px-8 sm:px-10 py-4 border-2 border-primary-950 text-primary-950 rounded-xl hover:bg-primary-950 hover:text-white transition-all duration-300 touch-manipulation backdrop-blur-sm bg-white/80 hover:shadow-xl transform hover:-translate-y-2 text-lg font-semibold"
+                    className="inline-flex items-center justify-center px-8 sm:px-10 py-4 border-2 border-primary-950 text-primary-950 rounded-xl hover:bg-primary-950 hover:text-white transition-all duration-300 touch-manipulation backdrop-blur-sm bg-white/80 hover:shadow-xl transform hover:-translate-y-2 text-base font-semibold"
                   >
                     Learn More
                   </Link>
@@ -275,8 +275,8 @@ const Home = React.memo(() => {
                       <Star className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-400 fill-current animate-pulse" style={{animationDelay: '0.4s'}} />
                     </div>
                     <div>
-                      <p className="text-sm sm:text-base font-semibold text-gray-800">10,000+ Happy Walkers</p>
-                      <p className="text-xs sm:text-sm text-gray-600">Trusted by athletes & fashion lovers</p>
+                      <p className="text-base font-semibold text-gray-800">10,000+ Happy Walkers</p>
+                      <p className="text-sm text-gray-600">Trusted by athletes & fashion lovers</p>
                     </div>
                   </div>
                 </div>
@@ -288,33 +288,38 @@ const Home = React.memo(() => {
 
       {/* Statistics Section */}
       <section className="py-12 sm:py-16 bg-gradient-to-r from-primary-950 via-primary-900 to-primary-950">
-        <ResponsiveContainer>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <ResponsiveGrid 
-            cols={{ default: 2, sm: 4 }}
+            cols={{ default: 3, sm: 4 }}
             gap="lg"
             minItemWidth="150px"
           >
             {stats.map((stat, index) => (
-              <div key={index} className="text-center animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
+              <div 
+                key={index} 
+                className="text-center animate-fade-in" 
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
                 <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 border border-white/20">
                   <stat.icon className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
                 </div>
-                <div className="text-2xl sm:text-3xl font-bold text-white mb-1">{stat.value}</div>
-                <p className="text-sm sm:text-base text-primary-200">{stat.label}</p>
+                <div className="text-2xl font-bold text-white mb-1">{stat.value}</div>
+                <p className="text-base text-primary-200">{stat.label}</p>
               </div>
             ))}
           </ResponsiveGrid>
-        </ResponsiveContainer>
+        </div>
       </section>
+
 
       {/* Features Section */}
       <section className="py-12 sm:py-16 bg-white">
         <ResponsiveContainer>
           <div className="text-center mb-8 sm:mb-12">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-3 sm:mb-4 animate-fade-in">
+            <h2 className="text-2xl font-bold text-gray-800 mb-3 sm:mb-4 animate-fade-in">
               Why Choose Our Shoes?
             </h2>
-            <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto animate-fade-in px-4">
+            <p className="text-base text-gray-600 max-w-2xl mx-auto animate-fade-in px-4">
               Experience the perfect combination of comfort, style, and performance with our premium features.
             </p>
           </div>
@@ -328,11 +333,89 @@ const Home = React.memo(() => {
                 <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-primary-100 to-blue-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 group-hover:shadow-lg transition-shadow duration-300">
                   <feature.icon className="w-6 h-6 sm:w-8 sm:h-8 text-primary-950 group-hover:scale-110 transition-transform duration-300" />
                 </div>
-                <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-2 group-hover:text-primary-700 transition-colors duration-300">{feature.title}</h3>
-                <p className="text-sm sm:text-base text-gray-600">{feature.description}</p>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2 group-hover:text-primary-700 transition-colors duration-300">{feature.title}</h3>
+                <p className="text-base text-gray-600">{feature.description}</p>
               </div>
             ))}
           </ResponsiveGrid>
+        </ResponsiveContainer>
+      </section>
+
+      {/* Brand Story Section */}
+      <section className="py-16 sm:py-20 bg-gradient-to-br from-primary-50 via-white to-blue-50 relative overflow-hidden">
+        {/* Background decorative elements */}
+        <div className="absolute inset-0">
+          <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-primary-200/20 to-blue-200/20 rounded-full blur-2xl animate-pulse"></div>
+          <div className="absolute bottom-20 right-10 w-40 h-40 bg-gradient-to-tr from-primary-100/30 to-purple-100/20 rounded-full blur-3xl animate-pulse" style={{animationDelay: '3s'}}></div>
+        </div>
+        
+        <ResponsiveContainer className="relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Content */}
+            <div className="animate-fade-in">
+              <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-primary-100 to-blue-100 rounded-full text-sm font-medium text-primary-800 mb-6">
+                <Award className="w-4 h-4 mr-2 text-primary-600" />
+                Our Story
+              </div>
+              <h2 className="text-3xl font-bold text-gray-900 mb-6 leading-tight">
+                 Curating Excellence
+                 <span className="block bg-gradient-to-r from-primary-600 via-primary-500 to-blue-600 bg-clip-text text-transparent mt-2">
+                   Since 2024
+                 </span>
+               </h2>
+               <p className="text-gray-600 mb-6 text-base leading-relaxed">
+                 Founded with a vision to bring the world's finest footwear to your doorstep, we've quickly established ourselves as a premium retailer specializing in imported shoes from top global brands. We believe every step matters, and that's why we carefully curate each collection with meticulous attention to quality and style.
+               </p>
+               <p className="text-gray-600 mb-8 text-base leading-relaxed">
+                 From sourcing authentic products from renowned international brands to partnering with trusted suppliers worldwide, our commitment to excellence drives everything we do. We're rapidly becoming the preferred choice of athletes, professionals, and style enthusiasts who demand authentic, high-quality imported footwear.
+               </p>
+               
+               {/* Key achievements */}
+               <div className="grid grid-cols-2 gap-6 mb-8">
+                 <div className="text-center p-4 bg-white/80 backdrop-blur-sm rounded-xl border border-primary-100 shadow-sm">
+                   <div className="text-2xl font-bold text-primary-600 mb-1">New</div>
+                   <div className="text-sm text-gray-600">Fresh Innovation</div>
+                 </div>
+                 <div className="text-center p-4 bg-white/80 backdrop-blur-sm rounded-xl border border-primary-100 shadow-sm">
+                   <div className="text-2xl font-bold text-primary-600 mb-1">50+</div>
+                   <div className="text-sm text-gray-600">Global Brands</div>
+                 </div>
+               </div>
+              
+              <Link
+                to="/about"
+                onClick={() => trackUserInteraction('Brand Story CTA Click', { button: 'Learn Our Story' })}
+                className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl hover:from-primary-700 hover:to-primary-800 transition-all duration-300 group font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+              >
+                Learn Our Story
+                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </div>
+            
+            {/* Image */}
+            <div className="relative animate-slide-up">
+              <div className="relative">
+                <img 
+                  src="/assets/craftsman-workshop.jpg" 
+                  alt="Premium imported shoes collection from global brands" 
+                  className="w-full h-auto object-cover rounded-2xl shadow-2xl"
+                />
+                {/* Overlay card */}
+                <div className="absolute -bottom-6 -left-6 bg-white/95 backdrop-blur-sm p-6 rounded-2xl shadow-2xl border border-white/20 max-w-xs">
+                  <div className="flex items-center space-x-3 mb-3">
+                    <div className="w-12 h-12 bg-gradient-to-br from-primary-100 to-primary-200 rounded-full flex items-center justify-center">
+                      <Users className="w-6 h-6 text-primary-700" />
+                    </div>
+                    <div>
+                       <div className="text-lg font-bold text-gray-900">Global Sourcing</div>
+                       <div className="text-sm text-gray-600">Premium Quality Focus</div>
+                     </div>
+                   </div>
+                   <p className="text-sm text-gray-700">Each pair is carefully selected from top international brands and trusted global suppliers.</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </ResponsiveContainer>
       </section>
 
@@ -344,10 +427,10 @@ const Home = React.memo(() => {
               <Star className="w-4 h-4 mr-2 text-yellow-500" />
               Handpicked Collection
             </div>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-3 sm:mb-4 animate-fade-in">
+            <h2 className="text-2xl font-bold text-gray-800 mb-3 sm:mb-4 animate-fade-in">
               Featured Shoes
             </h2>
-            <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto animate-fade-in px-4">
+            <p className="text-base text-gray-600 max-w-2xl mx-auto animate-fade-in px-4">
               Discover our handpicked selection of premium footwear that combines comfort, style, and performance for every occasion.
             </p>
           </div>
@@ -417,7 +500,7 @@ const Home = React.memo(() => {
               <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Star className="w-12 h-12 text-gray-400" />
               </div>
-              <p className="text-gray-500 text-sm sm:text-base">No featured shoes available at the moment.</p>
+              <p className="text-gray-500 text-base">No featured shoes available at the moment.</p>
             </div>
           )}
 
@@ -425,7 +508,7 @@ const Home = React.memo(() => {
             <Link
               to="/products"
               onClick={() => trackUserInteraction('Featured Products CTA Click', { button: 'View All Shoes' })}
-              className="inline-flex items-center px-8 sm:px-10 py-4 bg-gradient-to-r from-primary-950 to-primary-800 text-white rounded-xl hover:from-primary-800 hover:to-primary-700 transition-all duration-300 group animate-fade-in touch-manipulation shadow-2xl hover:shadow-primary-500/25 transform hover:-translate-y-2 text-lg font-semibold"
+              className="inline-flex items-center px-8 sm:px-10 py-4 bg-gradient-to-r from-primary-950 to-primary-800 text-white rounded-xl hover:from-primary-800 hover:to-primary-700 transition-all duration-300 group animate-fade-in touch-manipulation shadow-2xl hover:shadow-primary-500/25 transform hover:-translate-y-2 text-base font-semibold"
             >
               View All Shoes
               <ArrowRight className="ml-3 w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -438,10 +521,10 @@ const Home = React.memo(() => {
       <section className="py-16 bg-gray-50">
         <ResponsiveContainer>
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">
               What Our Customers Say
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-base text-gray-600 max-w-2xl mx-auto">
               Don't just take our word for it. Here's what real customers have to say about their experience.
             </p>
           </div>
@@ -482,8 +565,8 @@ const Home = React.memo(() => {
       <section className="py-20 bg-gray-50">
         <ResponsiveContainer>
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">What Our Customers Say</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">What Our Customers Say</h2>
+            <p className="text-base text-gray-600 max-w-2xl mx-auto">
               See real reviews from customers who love their purchases
             </p>
           </div>
@@ -506,20 +589,20 @@ const Home = React.memo(() => {
               <Award className="w-4 h-4 mr-2" />
               Premium Quality Guaranteed
             </div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6 animate-fade-in">
+            <h2 className="text-3xl font-bold text-white mb-6 animate-fade-in">
               Ready to Step Up Your
               <span className="block bg-gradient-to-r from-primary-400 via-primary-300 to-primary-500 bg-clip-text text-transparent">
                 Style Game?
               </span>
             </h2>
-            <p className="text-gray-300 mb-8 sm:mb-10 animate-fade-in px-4 text-lg sm:text-xl max-w-3xl mx-auto leading-relaxed">
+            <p className="text-gray-300 mb-8 sm:mb-10 animate-fade-in px-4 text-base max-w-3xl mx-auto leading-relaxed">
               Join thousands of satisfied customers who've transformed their wardrobe with our premium footwear collection. Your perfect pair is waiting.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in">
               <Link
                 to="/products"
                 onClick={() => trackUserInteraction('Final CTA Click', { button: 'Shop Now' })}
-                className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-xl hover:from-primary-600 hover:to-primary-700 transition-all duration-300 font-semibold text-lg shadow-2xl hover:shadow-primary-500/25 transform hover:-translate-y-2 group"
+                className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-xl hover:from-primary-600 hover:to-primary-700 transition-all duration-300 font-semibold text-base shadow-2xl hover:shadow-primary-500/25 transform hover:-translate-y-2 group"
               >
                 Shop Now
                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -527,7 +610,7 @@ const Home = React.memo(() => {
               <Link
                 to="/about"
                 onClick={() => trackUserInteraction('Final CTA Click', { button: 'Learn More' })}
-                className="inline-flex items-center px-8 py-4 border-2 border-white/30 text-white rounded-xl hover:bg-white/10 hover:border-white/50 transition-all duration-300 font-semibold text-lg backdrop-blur-sm group"
+                className="inline-flex items-center px-8 py-4 border-2 border-white/30 text-white rounded-xl hover:bg-white/10 hover:border-white/50 transition-all duration-300 font-semibold text-base backdrop-blur-sm group"
               >
                 Learn More
                 <Users className="ml-2 w-5 h-5 group-hover:scale-110 transition-transform" />
@@ -555,13 +638,13 @@ const Home = React.memo(() => {
               <TrendingUp className="w-5 h-5 mr-2 text-primary-600" />
               Join 50,000+ Happy Customers
             </div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-6 animate-fade-in leading-tight">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6 animate-fade-in leading-tight">
               Stay Ahead of the
               <span className="block bg-gradient-to-r from-primary-600 via-primary-500 to-primary-700 bg-clip-text text-transparent mt-2">
                 Fashion Trends
               </span>
             </h2>
-            <p className="text-gray-600 mb-8 sm:mb-10 animate-fade-in px-4 text-lg sm:text-xl max-w-3xl mx-auto leading-relaxed">
+            <p className="text-gray-600 mb-8 sm:mb-10 animate-fade-in px-4 text-base max-w-3xl mx-auto leading-relaxed">
               Be the first to discover new arrivals, exclusive offers, and insider style tips from our fashion experts. Join our community of style enthusiasts.
             </p>
             </div>
@@ -579,14 +662,14 @@ const Home = React.memo(() => {
                         placeholder="Enter your email address"
                         required
                         disabled={isSubscribing}
-                        className="w-full px-6 py-4 rounded-2xl border border-gray-300 bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-300 touch-manipulation text-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full px-6 py-4 rounded-2xl border border-gray-300 bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-300 touch-manipulation text-base disabled:opacity-50 disabled:cursor-not-allowed"
                       />
                       <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-primary-50/50 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
                     </div>
                     <button 
                       type="submit"
                       disabled={isSubscribing || !email.trim()}
-                      className="px-8 py-4 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-2xl hover:from-primary-700 hover:to-primary-800 transition-all duration-300 font-bold text-lg touch-manipulation shadow-xl hover:shadow-2xl transform hover:-translate-y-1 flex items-center justify-center group min-w-fit disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                      className="px-8 py-4 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-2xl hover:from-primary-700 hover:to-primary-800 transition-all duration-300 font-bold text-base touch-manipulation shadow-xl hover:shadow-2xl transform hover:-translate-y-1 flex items-center justify-center group min-w-fit disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                     >
                       {isSubscribing ? 'Subscribing...' : 'Subscribe Now'}
                       <ArrowRight className="ml-3 w-5 h-5 group-hover:translate-x-1 transition-transform" />

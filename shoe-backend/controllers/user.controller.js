@@ -259,7 +259,7 @@ exports.forgotPassword = async (req, res) => {
     // For now, return the token (remove this in production)
     const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
     
-    console.log(`Password reset URL for ${email}: ${resetUrl}`);
+
     
     res.status(200).json({
       success: true,

@@ -6,6 +6,7 @@ const { bannerImageUpload } = require('../config/multer.config');
 
 // Public routes
 router.get('/', categoryController.getAllCategories);
+router.get('/hierarchical', categoryController.getHierarchicalCategories);
 router.get('/:id', categoryController.getCategoryById);
 
 // Admin only routes

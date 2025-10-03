@@ -27,7 +27,7 @@ const CategoryNavigation: React.FC<CategoryNavigationProps> = ({
     const fetchCategories = async () => {
       try {
         setLoading(true);
-        const response = await api.get('/categories?active=true');
+        const response = await api.get('/categories/hierarchical?active=true');
         const categoriesData = response.categories || response.data?.categories || response.data?.data || response.data || [];
         const activeCategories = Array.isArray(categoriesData) ? categoriesData.filter(cat => cat.isActive) : [];
         

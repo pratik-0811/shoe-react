@@ -81,7 +81,7 @@ const OrderDetail: React.FC = () => {
       case 'delivered':
         return 'bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 border-green-200';
       case 'shipped':
-        return 'bg-gradient-to-r from-blue-100 to-sky-100 text-blue-800 border-blue-200';
+        return 'bg-gradient-to-r from-primary-100 to-primary-200 text-primary-800 border-primary-200';
       case 'processing':
         return 'bg-gradient-to-r from-yellow-100 to-amber-100 text-yellow-800 border-yellow-200';
       case 'confirmed':

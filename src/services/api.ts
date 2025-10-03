@@ -34,12 +34,30 @@ const retryRequest = async (error: AxiosError, retryCount = 0): Promise<AxiosRes
   return Promise.reject(error);
 };
 
+// Public endpoints that don't require authentication
+const PUBLIC_ENDPOINTS = [
+  '/reviews/product/',
+  '/reviews/bulk/stats'
+];
+
+// Check if endpoint is public
+const isPublicEndpoint = (url: string): boolean => {
+  return PUBLIC_ENDPOINTS.some(endpoint => {
+    if (endpoint.endsWith('/')) {
+      return url.includes(endpoint);
+    }
+    return url === endpoint || url.startsWith(endpoint + '?');
+  });
+};
+
 // Add a request interceptor to include auth token and handle loading states
 api.interceptors.request.use(
   (config) => {
-    // Add auth token if available
+    // Add auth token only for non-public endpoints
     const token = localStorage.getItem('token');
-    if (token) {
+    const url = config.url || '';
+    
+    if (token && !isPublicEndpoint(url)) {
       config.headers.Authorization = `Bearer ${token}`;
     }
 

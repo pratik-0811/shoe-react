@@ -4,6 +4,7 @@ const Cart = require('../models/cart.model');
 const Order = require('../models/order.model');
 const User = require('../models/user.model');
 const Coupon = require('../models/coupon.model');
+const emailService = require('../services/emailService');
 
 // Initialize Razorpay
 const razorpay = new Razorpay({
@@ -60,7 +61,7 @@ exports.createRazorpayOrder = async (req, res) => {
 // Verify Payment & Create Order
 // --------------------------
 exports.verifyPayment = async (req, res) => {
-  console.log('User Detail:', req.user);
+  
 
   try {
     const {
@@ -70,12 +71,16 @@ exports.verifyPayment = async (req, res) => {
       shippingAddress,
       appliedCoupons = [],
       notes,
+      items, // Cart items from frontend
     } = req.body;
 
     const errors = [];
     if (!razorpay_order_id) errors.push({ field: 'razorpay_order_id', message: 'Razorpay order ID is required' });
     if (!razorpay_payment_id) errors.push({ field: 'razorpay_payment_id', message: 'Razorpay payment ID is required' });
     if (!razorpay_signature) errors.push({ field: 'razorpay_signature', message: 'Razorpay signature is required' });
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      errors.push({ field: 'items', message: 'Cart items are required' });
+    }
 
     if (errors.length > 0) {
       return res.status(400).json({ message: 'Validation failed', errors });
@@ -96,22 +101,23 @@ exports.verifyPayment = async (req, res) => {
       return res.status(400).json({ message: `Payment not captured. Status is "${payment.status}"` });
     }
 
-    const cart = await Cart.findOne({ user: req.user._id }).populate('items.product');
-    if (!cart || cart.items.length === 0) {
-      return res.status(400).json({ message: 'Cart is empty. Cannot proceed with order.' });
-    }
-
-    for (const item of cart.items) {
-      if (!item.product || !item.product.inStock) {
+    // Validate items from request instead of database cart
+    const Product = require('../models/product.model');
+    const validatedItems = [];
+    
+    for (const item of items) {
+      const product = await Product.findById(item.product);
+      if (!product || !product.inStock) {
         return res.status(400).json({
-          message: `Product "${item.product?.name || 'Unknown'}" is out of stock or invalid.`,
+          message: `Product "${product?.name || 'Unknown'}" is out of stock or invalid.`,
         });
       }
+      validatedItems.push({ ...item, product });
     }
 
-    // Calculate subtotal
+    // Calculate subtotal using validated items
     let subtotal = 0;
-    for (const item of cart.items) {
+    for (const item of validatedItems) {
       subtotal += item.product.price * item.quantity;
     }
 
@@ -165,13 +171,6 @@ exports.verifyPayment = async (req, res) => {
           value: coupon.value,
           discountAmount,
         });
-
-        console.log('Valid coupon applied:', {
-          code: coupon.code,
-          type: coupon.type,
-          value: coupon.value,
-          discountAmount,
-        });
       } else {
         console.warn('Skipped coupon due to missing fields:', coupon);
       }
@@ -197,13 +196,15 @@ exports.verifyPayment = async (req, res) => {
       });
     }
 
-    // Build order items
-    const orderItems = cart.items.map(item => ({
+    // Build order items from validated items
+    const orderItems = validatedItems.map(item => ({
       product: item.product._id,
       quantity: item.quantity,
       price: item.product.price,
       name: item.product.name,
-      image: item.product.image,
+      image: item.product.images?.[0] || item.product.image,
+      size: item.size,
+      color: item.color,
     }));
 
     const orderNumber = `ORD-${Date.now()}`;
@@ -274,13 +275,49 @@ exports.verifyPayment = async (req, res) => {
 
     await newOrder.save();
 
-    // Clear cart
-    await Cart.findByIdAndUpdate(cart._id, { items: [], total: 0 });
+    // Clear cart after successful order
+    await Cart.findOneAndUpdate(
+      { user: req.user._id },
+      { items: [], total: 0 },
+      { new: true }
+    );
 
     // Increment user order count
     await User.findByIdAndUpdate(req.user._id, { $inc: { orders: 1 } });
 
     await newOrder.populate('user', 'name email');
+
+    // Send invoice email to customer
+    try {
+      const invoiceData = {
+        orderId: newOrder._id,
+        orderNumber: newOrder.orderNumber,
+        date: newOrder.createdAt,
+        customerName: newOrder.shippingAddress?.fullName || newOrder.user?.name || 'Customer',
+        customerEmail: newOrder.user?.email || 'customer@example.com',
+        shippingAddress: newOrder.shippingAddress,
+        items: newOrder.items.map(item => ({
+          name: item.name,
+          quantity: item.quantity,
+          price: item.price,
+          total: item.quantity * item.price
+        })),
+        subtotal: newOrder.subtotal || 0,
+        shippingCost: newOrder.shippingCost || 0,
+        discount: newOrder.totalDiscount || 0,
+        totalAmount: newOrder.total || 0,
+        paymentMethod: newOrder.paymentMethod
+      };
+      
+      await emailService.sendInvoiceEmail(
+        newOrder.user.email,
+        invoiceData,
+        newOrder.shippingAddress?.fullName || newOrder.user?.name || 'Customer'
+      );
+    } catch (emailError) {
+      console.error('Failed to send invoice email:', emailError);
+      // Don't fail the order creation if email fails
+    }
 
     return res.status(201).json({
       message: 'Payment verified and order created successfully',

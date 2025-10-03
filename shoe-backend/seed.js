@@ -269,18 +269,18 @@ const defaultAdmin = {
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/shoe-store")
   .then(async () => {
-    console.log("MongoDB connection established successfully");
+    // MongoDB connection established successfully
     
     try {
       // Clear existing data
       await Product.deleteMany({});
       await User.deleteMany({});
       await Category.deleteMany({});
-      console.log("Cleared existing data");
+      // Cleared existing data
       
       // Create categories first
       const createdCategories = await Category.insertMany(categories);
-      console.log(`${createdCategories.length} categories created successfully`);
+      // Categories created successfully
       
       // Create a map of category names to IDs
       const categoryMap = {};
@@ -312,18 +312,15 @@ mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/shoe-stor
       // Create default admin user
       const adminUser = new User(defaultAdmin);
       await adminUser.save();
-      console.log("Default admin user created:");
-      console.log("Email: admin@solewaale.com");
-      console.log("Password: admin123");
+      // Default admin user created
+    // Email: admin@solewaale.com
+    // Password: admin123
       
       // Insert new products with category references
       const createdProducts = await Product.insertMany(updatedProducts);
-      console.log(`${createdProducts.length} products created successfully`);
-      
-      console.log("\nCategories created:");
-      createdCategories.forEach(cat => {
-        console.log(`- ${cat.name} (${cat.slug})`);
-      });
+      // Products created successfully
+
+    // Categories created
       
       mongoose.connection.close();
     } catch (error) {

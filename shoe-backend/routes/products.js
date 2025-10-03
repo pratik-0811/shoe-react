@@ -12,6 +12,7 @@ router.get("/featured", validatePagination, handleValidationErrors, asyncHandler
 router.get("/new-arrivals", validatePagination, handleValidationErrors, asyncHandler(productController.getNewArrivals));
 router.get("/categories", asyncHandler(productController.getCategories));
 router.get("/category/:category", validatePagination, handleValidationErrors, asyncHandler(productController.getProductsByCategory));
+// This route must come last among GET routes to avoid conflicts with specific routes above
 router.get("/:id", validateObjectId('id'), handleValidationErrors, asyncHandler(productController.getProductById));
 
 // Review routes

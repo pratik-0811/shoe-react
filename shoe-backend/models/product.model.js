@@ -14,6 +14,7 @@ const reviewSchema = new mongoose.Schema({
 const productSchema = new mongoose.Schema({
   name: { type: String, required: true, trim: true, maxlength: [200, "Product name cannot exceed 200 characters"] },
   price: { type: Number, required: true, min: [0, "Price cannot be negative"] },
+  discounted_price: { type: Number, default: null, min: [0, "Discounted price cannot be negative"] },
   originalPrice: { type: Number, default: null, min: [0, "Original price cannot be negative"] },
   image: { type: String, required: true },
   category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },

@@ -25,6 +25,15 @@ export interface PaymentData {
     discount: number;
     type: 'percentage' | 'fixed';
   }>;
+  items?: Array<{
+    product: string;
+    quantity: number;
+    price: number;
+    name: string;
+    image: string;
+    size?: string;
+    color?: string;
+  }>;
 }
 
 export interface RazorpayResponse {
@@ -103,7 +112,7 @@ const processPayment = (paymentData: PaymentData, resolve: (result: PaymentResul
     },
     handler: async (response: RazorpayResponse) => {
       try {
-        // Verify payment on backend with shipping address and coupons
+        // Verify payment on backend with shipping address, coupons, and cart items
         const verificationData = {
           ...response,
           shippingAddress: {
@@ -114,7 +123,8 @@ const processPayment = (paymentData: PaymentData, resolve: (result: PaymentResul
             country: paymentData.shippingAddress.country
           },
           appliedCoupons: paymentData.appliedCoupons || [],
-          notes: 'Order from checkout'
+          notes: 'Order from checkout',
+          items: paymentData.items || []
         };
         
         const verificationResult = await verifyPayment(verificationData);
@@ -160,6 +170,15 @@ export const verifyPayment = async (verificationData: RazorpayResponse & {
     type: 'percentage' | 'fixed';
   }>;
   notes?: string;
+  items?: Array<{
+    product: string;
+    quantity: number;
+    price: number;
+    name: string;
+    image: string;
+    size?: string;
+    color?: string;
+  }>;
 }) => {
   try {
     const response = await api.post('/payments/verify', verificationData);
@@ -200,6 +219,63 @@ export const clearCart = async () => {
   }
 };
 
+// COD-specific interfaces
+export interface CODOrderData {
+  items: Array<{
+    product: string;
+    quantity: number;
+    price: number;
+    name: string;
+    image: string;
+    size: string;
+    color: string;
+  }>;
+  shippingAddress: {
+    fullName?: string;
+    street: string;
+    city: string;
+    state: string;
+    zipCode: string;
+    country: string;
+    phone?: string;
+  };
+  appliedCoupons?: Array<{
+    code: string;
+    discount: number;
+    type: 'percentage' | 'fixed';
+  }>;
+  notes?: string;
+}
+
+export interface CODOrderResult {
+  success: boolean;
+  order?: {
+    _id: string;
+    orderNumber: string;
+    total: number;
+    paymentMethod: string;
+    orderStatus: string;
+  };
+  error?: string;
+}
+
+// Create COD order
+export const createCODOrder = async (orderData: CODOrderData): Promise<CODOrderResult> => {
+  try {
+    const response = await api.post('/orders/cod', orderData);
+    
+    return {
+      success: true,
+      order: response.data.order
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      error: error.response?.data?.message || 'Failed to create COD order'
+    };
+  }
+};
+
 // Declare Razorpay on window object
 declare global {
   interface Window {
@@ -214,4 +290,5 @@ export default {
   createOrder,
   getOrderDetails,
   clearCart,
+  createCODOrder,
 };

@@ -202,20 +202,56 @@ class ReviewService {
     productId?: string
   ): Promise<ReviewData[]> {
     try {
-      let endpoint = '/reviews/admin/all';
-      const params: any = { page, limit, sort: '-createdAt', status: 'approved' };
-      
-      if (productId) {
-        endpoint = `/reviews/product/${productId}`;
+      // For public access, we need to get reviews from all products
+      // Since there's no public endpoint for all reviews, we'll get featured products first
+      // and then get their reviews
+      if (!productId) {
+        // Get all approved reviews by fetching from multiple products
+        // This is a workaround since we can't use admin endpoint on public pages
+        try {
+          const productsResponse = await api.get('/products/featured');
+          const products = productsResponse.data.products || productsResponse.data || [];
+          
+          let allReviewsWithImages: ReviewData[] = [];
+          
+          // Get reviews for each featured product
+          for (const product of products.slice(0, 5)) { // Limit to first 5 products to avoid too many requests
+            try {
+              const reviewsResponse = await api.get(`/reviews/product/${product._id}`, {
+                params: { page: 1, limit: 20, sort: '-createdAt' }
+              });
+              
+              const reviews = reviewsResponse.data.data?.reviews || [];
+              const reviewsWithImages = reviews.filter((review: ReviewData) => 
+                review.images && review.images.length > 0
+              );
+              
+              allReviewsWithImages = [...allReviewsWithImages, ...reviewsWithImages];
+            } catch (err) {
+              // Continue with other products if one fails
+              continue;
+            }
+          }
+          
+          // Sort by creation date and limit results
+          allReviewsWithImages.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+          return allReviewsWithImages.slice(0, limit);
+          
+        } catch (err) {
+          return [];
+        }
+      } else {
+        // For specific product, use the public endpoint
+        const response = await api.get(`/reviews/product/${productId}`, {
+          params: { page, limit, sort: '-createdAt' }
+        });
+        
+        // Filter reviews that have images
+        const reviews = response.data.data?.reviews || [];
+        return reviews.filter((review: ReviewData) => 
+          review.images && review.images.length > 0
+        );
       }
-
-      const response = await api.get(endpoint, { params });
-      
-      // Filter reviews that have images
-      const reviews = response.data.data?.reviews || [];
-      return reviews.filter((review: ReviewData) => 
-        review.images && review.images.length > 0
-      );
     } catch (error) {
       return [];
     }

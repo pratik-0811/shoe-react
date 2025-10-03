@@ -254,18 +254,31 @@ const ProductCard = ({
                   <h3 className="font-semibold text-gray-900 group-hover:text-primary-950 transition-colors duration-200 truncate">
                     {product.name}
                   </h3>
-                  <p className="text-sm text-gray-600 mb-1">{product.brand}</p>
+                  <p className="text-base text-gray-600 mb-1">{product.brand}</p>
                 </div>
                 <div className="text-right">
                   <div className="flex items-center gap-2">
-                    {product.originalPrice && product.originalPrice > product.price && (
-                      <span className="text-sm text-gray-500 line-through">
+                    {(product.originalPrice && product.originalPrice > (product.discounted_price || product.price)) && (
+                      <span className="text-base text-gray-500 line-through">
                         ₹{product.originalPrice}
                       </span>
                     )}
+                    {product.discounted_price && product.discounted_price < product.price && (
+                      <span className="text-base text-gray-500 line-through">
+                        ₹{product.price}
+                      </span>
+                    )}
                     <span className="text-lg font-bold text-primary-950">
-                      ₹{product.price}
+                      ₹{product.discounted_price || product.price}
                     </span>
+                    {((product.originalPrice && product.originalPrice > (product.discounted_price || product.price)) || (product.discounted_price && product.discounted_price < product.price)) && (
+                      <span className="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full font-medium">
+                        {product.discounted_price && product.discounted_price < product.price
+                          ? Math.round(((product.price - product.discounted_price) / product.price) * 100)
+                          : Math.round(((product.originalPrice! - (product.discounted_price || product.price)) / product.originalPrice!) * 100)
+                        }% OFF
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -275,7 +288,7 @@ const ProductCard = ({
                 <div className="flex items-center">
                   {renderStars(reviewStats?.averageRating || product.rating || 0)}
                 </div>
-                <span className="text-sm text-gray-600">
+                <span className="text-base text-gray-600">
                   ({reviewStats?.totalReviews || product.reviews?.length || 0} reviews)
                 </span>
               </div>
@@ -285,7 +298,7 @@ const ProductCard = ({
                 <button
                   onClick={handleAddToCart}
                   disabled={!product.inStock || isAddingToCart}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
+                  className={`px-4 py-2 rounded-lg text-base font-medium transition-all duration-200 flex items-center gap-2 ${
                     product.inStock && !isAddingToCart
                       ? 'bg-primary-950 text-white hover:bg-primary-800 hover:shadow-md'
                       : 'bg-gray-300 text-gray-500 cursor-not-allowed'
@@ -295,7 +308,7 @@ const ProductCard = ({
                   {isAddingToCart ? 'Adding...' : product.inStock ? 'Add to Cart' : 'Out of Stock'}
                 </button>
                 
-                <div className="flex items-center gap-2 text-sm text-gray-500">
+                <div className="flex items-center gap-2 text-base text-gray-500">
                   <Eye className="w-4 h-4" />
                   <span>View Details</span>
                 </div>
@@ -350,7 +363,7 @@ const ProductCard = ({
 
           {!product.inStock && (
             <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center">
-              <span className="bg-black/50 text-white px-4 py-2 rounded-lg text-xs sm:text-sm font-medium">
+              <span className="bg-black/50 text-white px-4 py-2 rounded-lg text-base font-medium">
                 Out of Stock
               </span>
             </div>
@@ -363,7 +376,7 @@ const ProductCard = ({
             <button
               onClick={handleAddToCart}
               disabled={!product.inStock}
-              className={`w-full py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center justify-center gap-2 ${
+              className={`w-full py-2 rounded-lg text-base font-medium transition-all duration-200 flex items-center justify-center gap-2 ${
                 product.inStock
                   ? 'bg-white text-primary-950 hover:bg-primary-50'
                   : 'bg-gray-300 text-gray-500 cursor-not-allowed'
@@ -379,10 +392,10 @@ const ProductCard = ({
         <div className="p-3 sm:p-4 md:p-5 flex-1 flex flex-col">
           <div className="flex-1">
             <div className="mb-2 sm:mb-3">
-              <h3 className="text-sm sm:text-base font-semibold text-gray-900 group-hover:text-primary-950 transition-colors duration-200 line-clamp-2">
+              <h3 className="text-base font-semibold text-gray-900 group-hover:text-primary-950 transition-colors duration-200 line-clamp-2">
                 {product.name}
               </h3>
-              <p className="text-xs sm:text-sm text-gray-600 font-medium">{product.brand}</p>
+              <p className="text-base text-gray-600 font-medium">{product.brand}</p>
             </div>
 
             {/* Quick Selection */}
@@ -391,7 +404,7 @@ const ProductCard = ({
                 {/* Sizes */}
                 {product.sizes && product.sizes.length > 0 && (
                   <div>
-                    <p className="text-xs text-gray-500 mb-1 font-medium">Sizes:</p>
+                    <p className="text-base text-gray-500 mb-1 font-medium">Sizes:</p>
                     <div className="flex flex-wrap gap-1">
                       {product.sizes.slice(0, 5).map((size, index) => (
                         <button
@@ -485,18 +498,26 @@ const ProductCard = ({
             {/* Price */}
             <div className="flex items-center justify-between mb-3 sm:mb-4">
               <div className="flex items-center gap-1.5 sm:gap-2">
-                {product.originalPrice && product.originalPrice > product.price && (
+                {(product.originalPrice && product.originalPrice > (product.discounted_price || product.price)) && (
                   <span className="text-xs sm:text-sm text-gray-500 line-through">
                     ₹{product.originalPrice}
                   </span>
                 )}
+                {product.discounted_price && product.discounted_price < product.price && (
+                  <span className="text-xs sm:text-sm text-gray-500 line-through">
+                    ₹{product.price}
+                  </span>
+                )}
                 <span className="text-lg sm:text-xl font-bold text-primary-950">
-                  ₹{product.price}
+                  ₹{product.discounted_price || product.price}
                 </span>
               </div>
-              {product.originalPrice && product.originalPrice > product.price && (
+              {((product.originalPrice && product.originalPrice > (product.discounted_price || product.price)) || (product.discounted_price && product.discounted_price < product.price)) && (
                 <span className="text-xs bg-red-100 text-red-600 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full font-medium">
-                  {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}% OFF
+                  {product.discounted_price && product.discounted_price < product.price
+                    ? Math.round(((product.price - product.discounted_price) / product.price) * 100)
+                    : Math.round(((product.originalPrice! - (product.discounted_price || product.price)) / product.originalPrice!) * 100)
+                  }% OFF
                 </span>
               )}
             </div>
