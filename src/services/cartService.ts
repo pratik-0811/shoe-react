@@ -44,6 +44,11 @@ class CartService {
     return res.data;
   }
 
+  async clearGuestCart(sessionId: string): Promise<{ message: string }> {
+    const res = await api.delete<{ message: string }>('/cart/guest', { data: { sessionId } });
+    return res.data;
+  }
+
   // For guest users (cart stored in localStorage) - fallback
   getLocalCart(): Cart | null {
     const cartStr = localStorage.getItem('cart');

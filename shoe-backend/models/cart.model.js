@@ -12,7 +12,14 @@ const cartSchema = new mongoose.Schema({
   sessionId: { type: String }, // For guest users
   items: [cartItemSchema],
   total: { type: Number, default: 0, min: [0, "Total cannot be negative"] },
-  expiresAt: { type: Date, default: Date.now } // 30 days TTL
+  expiresAt: { 
+    type: Date, 
+    default: function() {
+      // Set expiration to 1 day from now for guest carts, 30 days for user carts
+      const days = this.sessionId ? 1 : 30;
+      return new Date(Date.now() + days * 24 * 60 * 60 * 1000);
+    }
+  }
 }, {
   timestamps: true
 });

@@ -10,6 +10,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import { PageLoading } from './components/Loading';
 import PerformanceMonitor from './components/PerformanceMonitor';
+import ScrollToTop from './components/ScrollToTop';
 
 import { setupGlobalErrorHandlers } from './utils/errorHandler';
 import { logger } from './services/logger';
@@ -75,9 +76,10 @@ function App() {
             <WishlistProvider>
               <CartProvider>
                 <Router>
+                  <ScrollToTop />
               <div className="flex flex-col min-h-screen">
                 <Header />
-                <main className="flex-1">
+                <main className="flex-1 pb-20 lg:pb-0">
                   <Suspense fallback={<PageLoading text="Loading page..." />}>
                     <Routes>
                       <Route path="/" element={<Home />} />

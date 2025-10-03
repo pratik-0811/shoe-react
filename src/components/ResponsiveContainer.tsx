@@ -24,13 +24,13 @@ const ResponsiveContainer: React.FC<ResponsiveContainerProps> = ({
 
   const paddingClasses = {
     none: '',
-    sm: 'px-2 sm:px-4',
+    sm: 'px-3 sm:px-4',
     md: 'px-4 sm:px-6 lg:px-8',
     lg: 'px-6 sm:px-8 lg:px-12'
   };
 
   return (
-    <div className={`${maxWidthClasses[maxWidth]} mx-auto ${paddingClasses[padding]} ${className}`}>
+    <div className={`${maxWidthClasses[maxWidth]} mx-auto ${paddingClasses[padding]} w-full overflow-x-hidden ${className}`}>
       {children}
     </div>
   );

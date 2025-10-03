@@ -391,6 +391,14 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         localStorage.removeItem('cart');
         sessionStorage.removeItem('cartBackup');
       } else {
+        // For guest users, try to clear backend guest cart first
+        try {
+          const sessionId = getSessionId();
+          await cartService.clearGuestCart(sessionId);
+        } catch (guestCartError) {
+          // If backend clear fails, continue with local clear
+          console.warn('Failed to clear guest cart from backend:', guestCartError);
+        }
         setItems([]);
         localStorage.removeItem('cart');
         sessionStorage.removeItem('cartBackup');

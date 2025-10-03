@@ -47,6 +47,40 @@ const Header = () => {
     fetchCategories();
   }, []);
 
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMenuOpen) {
+      // Store current scroll position
+      const scrollY = window.scrollY;
+      document.body.style.top = `-${scrollY}px`;
+      document.body.classList.add('no-scroll');
+      
+      // Prevent touch events on background
+      const preventTouch = (e: TouchEvent) => {
+        if (e.target && !(e.target as Element).closest('.mobile-menu-overlay')) {
+          e.preventDefault();
+        }
+      };
+      
+      document.addEventListener('touchmove', preventTouch, { passive: false });
+      
+      return () => {
+        document.removeEventListener('touchmove', preventTouch);
+      };
+    } else {
+      document.body.classList.remove('no-scroll');
+      const scrollY = document.body.style.top;
+      document.body.style.top = '';
+      window.scrollTo(0, parseInt(scrollY || '0') * -1);
+    }
+
+    // Cleanup function to reset overflow when component unmounts
+    return () => {
+      document.body.classList.remove('no-scroll');
+      document.body.style.top = '';
+    };
+  }, [isMenuOpen]);
+
   const navItems = [
     { path: '/', name: 'Home', label: 'Home', hasSubmenu: false },
     { path: '/products', name: 'Shop', label: 'Shop', hasSubmenu: true },
@@ -357,37 +391,8 @@ const Header = () => {
 
           </nav>
 
-          {/* Right side icons */}
-          <div className="flex items-center space-x-1">
-            {/* Mobile Search */}
-            <div className="lg:hidden relative">
-              <button
-                onClick={() => setIsSearchOpen(!isSearchOpen)}
-                className="p-3 hover:bg-gray-50 rounded-full transition-all duration-200 group"
-              >
-                <Search className="w-5 h-5 text-gray-600 group-hover:text-amber-600 transition-colors" />
-              </button>
-              
-              {/* Mobile Search Dropdown */}
-              {isSearchOpen && (
-                <div className="absolute top-full right-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-gray-100 p-4 z-50">
-                  <form onSubmit={handleSearch}>
-                    <div className="relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                      <input
-                        type="text"
-                        placeholder="Search shoes..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all"
-                        autoFocus
-                      />
-                    </div>
-                  </form>
-                </div>
-              )}
-            </div>
-            
+          {/* Right side icons - Desktop only */}
+          <div className="hidden lg:flex items-center space-x-1">
             <Link to="/wishlist" className="relative p-3 hover:bg-gray-50 rounded-full transition-all duration-200 group">
               <Heart className="w-5 h-5 text-gray-600 group-hover:text-red-500 transition-colors" />
               {wishlistCount > 0 && (
@@ -409,24 +414,34 @@ const Header = () => {
             <Link to="/profile" className="p-3 hover:bg-gray-50 rounded-full transition-all duration-200 group">
               <User className="w-5 h-5 text-gray-600 group-hover:text-amber-600 transition-colors" />
             </Link>
-
-            {/* Mobile menu button */}
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="lg:hidden p-2 hover:bg-primary-50 rounded-lg transition-colors"
-            >
-              {isMenuOpen ? (
-                <X className="w-6 h-6 text-gray-600" />
-              ) : (
-                <Menu className="w-6 h-6 text-gray-600" />
-              )}
-            </button>
           </div>
+
+          {/* Mobile menu button */}
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="lg:hidden p-2 hover:bg-primary-50 rounded-lg transition-colors"
+          >
+            {isMenuOpen ? (
+              <X className="w-6 h-6 text-gray-600" />
+            ) : (
+              <Menu className="w-6 h-6 text-gray-600" />
+            )}
+          </button>
         </div>
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="lg:hidden border-t border-gray-200 py-4 animate-fade-in">
+          <div className="mobile-menu-overlay lg:hidden animate-fade-in border-t border-gray-200 py-4">
+            {/* Close Button */}
+            <div className="flex justify-end px-4 mb-4">
+              <button
+                onClick={() => setIsMenuOpen(false)}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                aria-label="Close menu"
+              >
+                <X className="w-6 h-6 text-gray-600" />
+              </button>
+            </div>
             <nav className="space-y-2 mb-4">
               {navItems.map((item) => (
                 <Link
@@ -447,78 +462,129 @@ const Header = () => {
               ))}
             </nav>
             
-            {/* Enhanced Mobile Categories */}
-            <div className="border-t border-gray-200 pt-3">
-              <div className="px-3 mb-3">
-                <h3 className="text-base font-bold text-gray-900 flex items-center mb-1">
-                  <div className="w-6 h-6 mr-2 bg-gradient-to-br from-primary-500 via-blue-500 to-amber-500 rounded-lg flex items-center justify-center shadow-md">
+            {/* Enhanced Mobile Categories - Desktop Style */}
+            <div className="border-t border-gray-200 pt-4">
+              <div className="px-3 mb-4">
+                <h3 className="text-lg font-bold text-gray-900 flex items-center mb-2">
+                  <div className="w-6 h-6 mr-2 bg-gradient-to-br from-amber-500 to-orange-500 rounded-lg flex items-center justify-center shadow-md">
                     <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
                     </svg>
                   </div>
-                  <span className="bg-gradient-to-r from-primary-600 to-amber-600 bg-clip-text text-transparent">
-                    Categories
+                  <span className="bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+                    Shop Categories
                   </span>
                 </h3>
-                <p className="text-xs text-gray-600">Find your style</p>
+                <p className="text-sm text-gray-600">Explore our complete collection</p>
               </div>
               
-              <div className="px-2 space-y-2">
-                {/* Dynamic Categories */}
-                {categories.map((category, index) => {
-                  const categoryColors = [
-                    'from-red-400 to-pink-500',
-                    'from-blue-400 to-indigo-500', 
-                    'from-green-400 to-emerald-500',
-                    'from-purple-400 to-violet-500',
-                    'from-orange-400 to-red-500',
-                    'from-teal-400 to-cyan-500'
-                  ];
-                  
-                  return (
-                    <Link
-                      key={category._id}
-                      to={`/products?category=${category.slug}`}
-                      onClick={() => setIsMenuOpen(false)}
-                      className="flex items-center p-3 rounded-lg bg-white border border-gray-200 hover:bg-gradient-to-r hover:from-primary-50 hover:to-amber-50 hover:border-primary-300 transition-all duration-300 active:scale-95 shadow-sm hover:shadow-md"
-                    >
-                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center mr-3 ${category.icon ? 'bg-gray-100' : `bg-gradient-to-br ${categoryColors[index % categoryColors.length]}`} shadow-sm`}>
-                        {category.icon ? (
-                          <img 
-                            src={category.icon} 
-                            alt={category.name}
-                            className="w-5 h-5 object-contain"
-                          />
-                        ) : (
-                          <div className="w-4 h-4 bg-white rounded-md flex items-center justify-center">
-                            <div className="w-2 h-2 bg-current rounded-sm opacity-80"></div>
-                          </div>
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="text-xs font-semibold text-gray-900 flex items-center mb-0.5 truncate">
+              <div className="px-3 space-y-6">
+                {/* Dynamic Categories with Desktop-like Structure */}
+                {categories.length > 0 ? (
+                  categories.map((category) => (
+                    <div key={category._id} className="group">
+                      <div className="flex items-center justify-between mb-3 pb-2 border-b border-amber-200">
+                        <h4 className="text-base font-bold text-gray-900 capitalize flex items-center">
+                          <span className="w-2 h-2 bg-amber-500 rounded-full mr-2"></span>
                           {category.name}
-                          {category.featured && (
-                            <div className="ml-1 px-1.5 py-0.5 bg-gradient-to-r from-yellow-400 to-orange-400 text-white text-xs rounded-full font-medium animate-bounce flex-shrink-0">
-                              Hot
-                            </div>
-                          )}
                         </h4>
-                        {category.description && (
-                          <p className="text-xs text-gray-500 leading-tight line-clamp-1">
-                            {category.description}
-                          </p>
-                        )}
-                        <div className="mt-0.5 text-xs text-primary-600 font-medium">
-                          Shop Now →
-                        </div>
                       </div>
-                      <ChevronDown className="w-3 h-3 text-gray-400 rotate-[-90deg] flex-shrink-0" />
-                    </Link>
-                  );
-                })}
+                      <div className="space-y-2">
+                        <Link 
+                          to={`/products?category=${category.slug}`}
+                          onClick={() => setIsMenuOpen(false)}
+                          className="flex items-center justify-between w-full p-3 bg-gradient-to-r from-amber-50 to-orange-50 hover:from-amber-100 hover:to-orange-100 rounded-lg transition-all duration-300 border border-amber-100 hover:border-amber-200 shadow-sm hover:shadow-md"
+                        >
+                          <span className="font-semibold text-amber-700 hover:text-amber-800">
+                            View All {category.name}
+                          </span>
+                          <ArrowRight className="w-4 h-4 text-amber-600" />
+                        </Link>
+                        {category.subcategories && category.subcategories.slice(0, 3).map((sub) => (
+                          <Link 
+                            key={sub._id}
+                            to={`/products?category=${sub.slug}`}
+                            onClick={() => setIsMenuOpen(false)}
+                            className="block p-2 text-gray-600 hover:text-amber-600 hover:bg-amber-50 rounded-md transition-all duration-200 font-medium capitalize border-l-2 border-transparent hover:border-amber-300 pl-4"
+                          >
+                            {sub.name}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  // Fallback static categories if no dynamic data
+                  <>
+                    <div className="group">
+                      <div className="flex items-center justify-between mb-3 pb-2 border-b border-amber-200">
+                        <h4 className="text-base font-bold text-gray-900 flex items-center">
+                          <span className="w-2 h-2 bg-amber-500 rounded-full mr-2"></span>
+                          Men
+                        </h4>
+                      </div>
+                      <div className="space-y-2">
+                        <Link 
+                          to="/products?category=men"
+                          onClick={() => setIsMenuOpen(false)}
+                          className="flex items-center justify-between w-full p-3 bg-gradient-to-r from-amber-50 to-orange-50 hover:from-amber-100 hover:to-orange-100 rounded-lg transition-all duration-300 border border-amber-100 hover:border-amber-200 shadow-sm hover:shadow-md"
+                        >
+                          <span className="font-semibold text-amber-700 hover:text-amber-800">
+                            All Men's Shoes
+                          </span>
+                          <ArrowRight className="w-4 h-4 text-amber-600" />
+                        </Link>
+                        <Link to="/products?category=men-shoes" onClick={() => setIsMenuOpen(false)} className="block p-2 text-gray-600 hover:text-amber-600 hover:bg-amber-50 rounded-md transition-all duration-200 font-medium border-l-2 border-transparent hover:border-amber-300 pl-4">Shoes</Link>
+                        <Link to="/products?category=men-accessories" onClick={() => setIsMenuOpen(false)} className="block p-2 text-gray-600 hover:text-amber-600 hover:bg-amber-50 rounded-md transition-all duration-200 font-medium border-l-2 border-transparent hover:border-amber-300 pl-4">Accessories</Link>
+                      </div>
+                    </div>
+                    <div className="group">
+                      <div className="flex items-center justify-between mb-3 pb-2 border-b border-amber-200">
+                        <h4 className="text-base font-bold text-gray-900 flex items-center">
+                          <span className="w-2 h-2 bg-amber-500 rounded-full mr-2"></span>
+                          Women
+                        </h4>
+                      </div>
+                      <div className="space-y-2">
+                        <Link 
+                          to="/products?category=women"
+                          onClick={() => setIsMenuOpen(false)}
+                          className="flex items-center justify-between w-full p-3 bg-gradient-to-r from-amber-50 to-orange-50 hover:from-amber-100 hover:to-orange-100 rounded-lg transition-all duration-300 border border-amber-100 hover:border-amber-200 shadow-sm hover:shadow-md"
+                        >
+                          <span className="font-semibold text-amber-700 hover:text-amber-800">
+                            All Women's Shoes
+                          </span>
+                          <ArrowRight className="w-4 h-4 text-amber-600" />
+                        </Link>
+                        <Link to="/products?category=women-shoes" onClick={() => setIsMenuOpen(false)} className="block p-2 text-gray-600 hover:text-amber-600 hover:bg-amber-50 rounded-md transition-all duration-200 font-medium border-l-2 border-transparent hover:border-amber-300 pl-4">Shoes</Link>
+                        <Link to="/products?category=women-accessories" onClick={() => setIsMenuOpen(false)} className="block p-2 text-gray-600 hover:text-amber-600 hover:bg-amber-50 rounded-md transition-all duration-200 font-medium border-l-2 border-transparent hover:border-amber-300 pl-4">Accessories</Link>
+                      </div>
+                    </div>
+                    <div className="group">
+                      <div className="flex items-center justify-between mb-3 pb-2 border-b border-amber-200">
+                        <h4 className="text-base font-bold text-gray-900 flex items-center">
+                          <span className="w-2 h-2 bg-amber-500 rounded-full mr-2"></span>
+                          Kids
+                        </h4>
+                      </div>
+                      <div className="space-y-2">
+                        <Link 
+                          to="/products?category=kids"
+                          onClick={() => setIsMenuOpen(false)}
+                          className="flex items-center justify-between w-full p-3 bg-gradient-to-r from-amber-50 to-orange-50 hover:from-amber-100 hover:to-orange-100 rounded-lg transition-all duration-300 border border-amber-100 hover:border-amber-200 shadow-sm hover:shadow-md"
+                        >
+                          <span className="font-semibold text-amber-700 hover:text-amber-800">
+                            All Kids' Shoes
+                          </span>
+                          <ArrowRight className="w-4 h-4 text-amber-600" />
+                        </Link>
+                        <Link to="/products?category=kids-shoes" onClick={() => setIsMenuOpen(false)} className="block p-2 text-gray-600 hover:text-amber-600 hover:bg-amber-50 rounded-md transition-all duration-200 font-medium border-l-2 border-transparent hover:border-amber-300 pl-4">Shoes</Link>
+                        <Link to="/products?category=kids-accessories" onClick={() => setIsMenuOpen(false)} className="block p-2 text-gray-600 hover:text-amber-600 hover:bg-amber-50 rounded-md transition-all duration-200 font-medium border-l-2 border-transparent hover:border-amber-300 pl-4">Accessories</Link>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
-              
 
             </div>
             
@@ -541,6 +607,86 @@ const Header = () => {
         )}
       </div>
       
+      {/* Mobile Bottom Navigation */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 shadow-lg mobile-safe-area">
+        <div className="flex items-center justify-around py-2 px-2">
+          {/* Search */}
+          <div className="relative">
+            <button
+              onClick={() => setIsSearchOpen(!isSearchOpen)}
+              className="flex flex-col items-center p-2 hover:bg-gray-50 rounded-lg transition-all duration-200 group touch-target"
+            >
+              <Search className="w-6 h-6 text-gray-600 group-hover:text-amber-600 transition-colors mb-1" />
+              <span className="text-xs text-gray-600 group-hover:text-amber-600 transition-colors">Search</span>
+            </button>
+            
+            {/* Mobile Search Modal */}
+            {isSearchOpen && (
+              <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-start justify-center pt-20">
+                <div className="bg-white rounded-xl shadow-xl border border-gray-100 p-6 mx-4 w-full max-w-md">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold text-gray-900">Search Products</h3>
+                    <button
+                      onClick={() => setIsSearchOpen(false)}
+                      className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+                    >
+                      <X className="w-5 h-5 text-gray-500" />
+                    </button>
+                  </div>
+                  <form onSubmit={handleSearch}>
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                      <input
+                        type="text"
+                        placeholder="Search for shoes, brands, styles..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all"
+                        autoFocus
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      className="w-full mt-4 bg-amber-600 text-white py-3 rounded-lg hover:bg-amber-700 transition-colors font-medium"
+                    >
+                      Search
+                    </button>
+                  </form>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Wishlist */}
+          <Link to="/wishlist" className="flex flex-col items-center p-2 hover:bg-gray-50 rounded-lg transition-all duration-200 group relative touch-target">
+            <Heart className="w-6 h-6 text-gray-600 group-hover:text-red-500 transition-colors mb-1" />
+            <span className="text-xs text-gray-600 group-hover:text-red-500 transition-colors">Wishlist</span>
+            {wishlistCount > 0 && (
+              <span className="absolute -top-1 right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium shadow-sm">
+                {wishlistCount}
+              </span>
+            )}
+          </Link>
+
+          {/* Cart */}
+          <Link to="/cart" className="flex flex-col items-center p-2 hover:bg-gray-50 rounded-lg transition-all duration-200 group relative touch-target">
+            <ShoppingBag className="w-6 h-6 text-gray-600 group-hover:text-amber-600 transition-colors mb-1" />
+            <span className="text-xs text-gray-600 group-hover:text-amber-600 transition-colors">Cart</span>
+            {itemCount > 0 && (
+              <span className="absolute -top-1 right-1 bg-amber-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium shadow-sm">
+                {itemCount}
+              </span>
+            )}
+          </Link>
+
+          {/* Profile */}
+          <Link to="/profile" className="flex flex-col items-center p-2 hover:bg-gray-50 rounded-lg transition-all duration-200 group touch-target">
+            <User className="w-6 h-6 text-gray-600 group-hover:text-amber-600 transition-colors mb-1" />
+            <span className="text-xs text-gray-600 group-hover:text-amber-600 transition-colors">Profile</span>
+          </Link>
+        </div>
+      </div>
+
       {/* Click outside to close search */}
       {isSearchOpen && (
         <div 

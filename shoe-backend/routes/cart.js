@@ -7,6 +7,7 @@ const { asyncHandler } = require("../middleware/error.middleware");
 // Guest cart routes (public)
 router.post("/guest", asyncHandler(cartController.getGuestCart));
 router.post("/guest/items", asyncHandler(cartController.addToGuestCart));
+router.delete("/guest", asyncHandler(cartController.clearGuestCart));
 
 // All other cart routes are protected
 router.use(verifyToken);

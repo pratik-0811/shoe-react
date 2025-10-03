@@ -17,7 +17,8 @@ exports.getGuestCart = async (req, res) => {
     
     if (!cart) {
       // Create a new cart if one doesn't exist
-      cart = new Cart({ sessionId, items: [], total: 0 });
+      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 1 day from now
+      cart = new Cart({ sessionId, items: [], total: 0, expiresAt });
       await cart.save();
     }
     
@@ -52,7 +53,8 @@ exports.addToGuestCart = async (req, res) => {
     // Find guest cart or create a new one
     let cart = await Cart.findOne({ sessionId });
     if (!cart) {
-      cart = new Cart({ sessionId, items: [], total: 0 });
+      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 1 day from now
+      cart = new Cart({ sessionId, items: [], total: 0, expiresAt });
     }
     
     // Check if product already in cart with same size and color
@@ -280,5 +282,32 @@ exports.clearCart = async (req, res) => {
     res.status(200).json({ message: "Cart cleared successfully", cart });
   } catch (error) {
     res.status(500).json({ message: "Error clearing cart", error: error.message });
+  }
+};
+
+// Clear guest cart
+exports.clearGuestCart = async (req, res) => {
+  try {
+    const { sessionId } = req.body;
+    
+    if (!sessionId) {
+      return res.status(400).json({ message: "Session ID is required" });
+    }
+
+    // Find guest cart
+    const cart = await Cart.findOne({ sessionId });
+    if (!cart) {
+      // If no cart exists, consider it already cleared
+      return res.status(200).json({ message: "Cart already cleared" });
+    }
+    
+    // Clear cart items and reset total
+    cart.items = [];
+    cart.total = 0;
+    
+    await cart.save();
+    res.status(200).json({ message: "Guest cart cleared successfully", cart });
+  } catch (error) {
+    res.status(500).json({ message: "Error clearing guest cart", error: error.message });
   }
 };
