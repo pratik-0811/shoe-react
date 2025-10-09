@@ -298,7 +298,7 @@ const Checkout: React.FC = () => {
   }
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-primary-100 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-primary-100 py-8 checkout-container">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8 text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full mb-4 shadow-lg">
@@ -311,11 +311,11 @@ const Checkout: React.FC = () => {
           <div className="w-24 h-1 bg-gradient-to-r from-primary-400 to-primary-600 rounded-full mx-auto mt-3"></div>
         </div>
         
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 checkout-layout">
           {/* Order Form */}
-          <div className="space-y-6">
+          <div className="space-y-6 checkout-main">
             {/* Customer Information */}
-            <div className="bg-white p-6 rounded-xl shadow-lg border border-primary-100 hover:shadow-xl transition-all duration-300">
+            <div className="bg-white p-6 rounded-xl shadow-lg border border-primary-100 hover:shadow-xl transition-all duration-300 checkout-form-section">
               <div className="flex items-center mb-4">
                 <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg flex items-center justify-center mr-3">
                   <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -324,14 +324,14 @@ const Checkout: React.FC = () => {
                 </div>
                 <h2 className="text-xl font-semibold text-gray-900">Customer Information</h2>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 form-grid">
                 <div>
                   <label className="block text-base font-medium text-primary-700 mb-2">Full Name</label>
                   <input
                     type="text"
                     value={customerInfo.name}
                     onChange={(e) => handleCustomerInfoChange('name', e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 hover:border-primary-300"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 hover:border-primary-300 checkout-input"
                     required
                   />
                 </div>
@@ -341,7 +341,7 @@ const Checkout: React.FC = () => {
                     type="email"
                     value={customerInfo.email}
                     onChange={(e) => handleCustomerInfoChange('email', e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 hover:border-primary-300"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 hover:border-primary-300 checkout-input"
                     required
                   />
                 </div>
@@ -351,7 +351,7 @@ const Checkout: React.FC = () => {
                     type="tel"
                     value={customerInfo.phone}
                     onChange={(e) => handleCustomerInfoChange('phone', e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 hover:border-primary-300"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 hover:border-primary-300 checkout-input"
                     required
                   />
                 </div>
@@ -359,7 +359,7 @@ const Checkout: React.FC = () => {
             </div>
             
             {/* Shipping Address */}
-            <div className="bg-white p-6 rounded-xl shadow-lg border border-primary-100 hover:shadow-xl transition-all duration-300">
+            <div className="bg-white p-6 rounded-xl shadow-lg border border-primary-100 hover:shadow-xl transition-all duration-300 checkout-form-section">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center">
                   <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg flex items-center justify-center mr-3">
@@ -415,7 +415,7 @@ const Checkout: React.FC = () => {
             </div>
             
             {/* Billing Address */}
-            <div className="bg-white p-6 rounded-lg shadow-sm">
+            <div className="bg-white p-6 rounded-lg shadow-sm checkout-form-section">
               <h2 className="text-lg font-semibold text-gray-900 mb-4">Billing Address</h2>
               <div className="mb-4">
                 <label className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50/50 transition-all duration-200 cursor-pointer">
@@ -479,7 +479,7 @@ const Checkout: React.FC = () => {
             />
             
             {/* Payment Method */}
-            <div className="bg-white p-6 rounded-xl shadow-lg border border-primary-100 hover:shadow-xl transition-all duration-300">
+            <div className="bg-white p-6 rounded-xl shadow-lg border border-primary-100 hover:shadow-xl transition-all duration-300 checkout-form-section">
               <div className="flex items-center mb-6">
                 <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg flex items-center justify-center mr-3">
                   <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -488,8 +488,8 @@ const Checkout: React.FC = () => {
                 </div>
                 <h2 className="text-xl font-semibold text-gray-900">Payment Method</h2>
               </div>
-              <div className="space-y-4">
-                <label className={`flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 ${
+              <div className="space-y-4 payment-options">
+                <label className={`flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 payment-method-card ${
                   paymentMethod === 'razorpay' 
                     ? 'border-primary-500 bg-gradient-to-r from-primary-50 to-orange-50 shadow-md' 
                     : 'border-gray-200 bg-white hover:border-primary-300 hover:bg-primary-25'
@@ -522,7 +522,7 @@ const Checkout: React.FC = () => {
                   )}
                 </label>
                 
-                <label className={`flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 ${
+                <label className={`flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 payment-method-card ${
                   paymentMethod === 'cod' 
                     ? 'border-primary-500 bg-gradient-to-r from-primary-50 to-orange-50 shadow-md' 
                     : 'border-gray-200 bg-white hover:border-primary-300 hover:bg-primary-25'
@@ -559,7 +559,7 @@ const Checkout: React.FC = () => {
           </div>
           
           {/* Order Summary */}
-          <div className="bg-white p-6 rounded-xl shadow-lg border border-primary-100 h-fit sticky top-8">
+          <div className="bg-white p-6 rounded-xl shadow-lg border border-primary-100 h-fit sticky top-8 checkout-sidebar order-summary-mobile">
             <div className="flex items-center mb-6">
               <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg flex items-center justify-center mr-3">
                 <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -572,13 +572,13 @@ const Checkout: React.FC = () => {
             {/* Cart Items */}
             <div className="space-y-4 mb-6">
               {items.map((item) => (
-                <div key={`${item.product._id}-${item.size}-${item.color}`} className="flex items-center space-x-4 p-3 bg-gradient-to-r from-primary-50 to-orange-50 rounded-lg border border-primary-100 hover:shadow-md transition-all duration-200">
+                <div key={`${item.product._id}-${item.size}-${item.color}`} className="flex items-center space-x-4 p-3 bg-gradient-to-r from-primary-50 to-orange-50 rounded-lg border border-primary-100 hover:shadow-md transition-all duration-200 cart-item-mobile order-item">
                   <img
                     src={item.product.images[0]}
                     alt={item.product.name}
-                    className="w-16 h-16 object-cover rounded-lg shadow-sm"
+                    className="w-16 h-16 object-cover rounded-lg shadow-sm cart-item-image order-item-image"
                   />
-                  <div className="flex-1">
+                  <div className="flex-1 order-item-details">
                     <h3 className="font-semibold text-gray-900 mb-1">{item.product.name}</h3>
                     <div className="flex flex-wrap gap-2 text-xs">
                       {item.size && <span className="bg-primary-100 text-primary-700 px-2 py-1 rounded-full font-medium">Size: {item.size}</span>}
@@ -586,7 +586,7 @@ const Checkout: React.FC = () => {
                       <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded-full font-medium">Qty: {item.quantity}</span>
                     </div>
                   </div>
-                  <div className="text-right">
+                  <div className="text-right order-item-price">
                     <p className="font-bold text-primary-600 text-lg">₹{(item.product.price * item.quantity).toFixed(2)}</p>
                   </div>
                 </div>
@@ -637,7 +637,7 @@ const Checkout: React.FC = () => {
               onClick={handlePlaceOrder}
               disabled={!canPlaceOrder || processingPayment}
               aria-disabled={!canPlaceOrder || processingPayment}
-              className={`w-full py-4 px-6 rounded-xl font-bold text-lg transition-all duration-300 transform ${
+              className={`w-full py-4 px-6 rounded-xl font-bold text-lg transition-all duration-300 transform checkout-button-mobile ${
                 (!canPlaceOrder || processingPayment)
                   ? 'bg-gray-400 text-white cursor-not-allowed opacity-60'
                   : 'bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white shadow-lg hover:shadow-xl hover:scale-105 active:scale-95'

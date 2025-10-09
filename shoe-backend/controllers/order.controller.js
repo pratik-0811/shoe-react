@@ -291,6 +291,39 @@ exports.createOrder = async (req, res) => {
     await User.findByIdAndUpdate(req.user.id, { $inc: { orders: 1 } });
     
     await order.populate('user', 'name email');
+    
+    // Send invoice email to customer
+    try {
+      const invoiceData = {
+        orderId: order._id,
+        orderNumber: order.orderNumber || `ORD-${order._id.toString().slice(-8).toUpperCase()}`,
+        date: order.createdAt,
+        customerName: order.shippingAddress?.fullName || order.user?.name || 'Customer',
+        customerEmail: order.user?.email || 'customer@example.com',
+        shippingAddress: order.shippingAddress,
+        items: order.items.map(item => ({
+          name: item.name,
+          quantity: item.quantity,
+          price: item.price,
+          total: item.quantity * item.price
+        })),
+        subtotal: order.subtotal || 0,
+        shippingCost: order.shippingCost || 0,
+        discount: order.totalDiscount || 0,
+        totalAmount: order.total || 0,
+        paymentMethod: order.paymentMethod
+      };
+      
+      await emailService.sendInvoiceEmail(
+        order.user.email,
+        invoiceData,
+        order.shippingAddress?.fullName || order.user?.name || 'Customer'
+      );
+    } catch (emailError) {
+      console.error('Failed to send invoice email:', emailError);
+      // Don't fail the order creation if email fails
+    }
+    
     res.status(201).json(order);
   } catch (error) {
     res.status(400).json({ message: "Error creating order", error: error.message });
@@ -399,6 +432,39 @@ exports.createOrderFromCart = async (req, res) => {
     await User.findByIdAndUpdate(req.user.id, { $inc: { orders: 1 } });
     
     await order.populate('user', 'name email');
+    
+    // Send invoice email to customer
+    try {
+      const invoiceData = {
+        orderId: order._id,
+        orderNumber: order.orderNumber || `ORD-${order._id.toString().slice(-8).toUpperCase()}`,
+        date: order.createdAt,
+        customerName: order.shippingAddress?.fullName || order.user?.name || 'Customer',
+        customerEmail: order.user?.email || 'customer@example.com',
+        shippingAddress: order.shippingAddress,
+        items: order.items.map(item => ({
+          name: item.name,
+          quantity: item.quantity,
+          price: item.price,
+          total: item.quantity * item.price
+        })),
+        subtotal: order.subtotal || 0,
+        shippingCost: order.shippingCost || 0,
+        discount: order.totalDiscount || 0,
+        totalAmount: order.total || 0,
+        paymentMethod: order.paymentMethod
+      };
+      
+      await emailService.sendInvoiceEmail(
+        order.user.email,
+        invoiceData,
+        order.shippingAddress?.fullName || order.user?.name || 'Customer'
+      );
+    } catch (emailError) {
+      console.error('Failed to send invoice email:', emailError);
+      // Don't fail the order creation if email fails
+    }
+    
     res.status(201).json(order);
   } catch (error) {
     res.status(400).json({ message: "Error creating order from cart", error: error.message });

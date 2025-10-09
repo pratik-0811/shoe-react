@@ -35,6 +35,8 @@ const recommendationRoutes = require("./routes/recommendations");
 const docsRoutes = require("./routes/docs");
 const healthRoutes = require("./routes/health");
 const passwordResetRoutes = require("./routes/passwordReset");
+const emailTestRoutes = require('./routes/email-test');
+
 
 // Import middleware
 const { errorHandler, notFound } = require('./middleware/error.middleware');
@@ -78,7 +80,15 @@ app.use('/api/', generalLimiter);
 
 // CORS configuration
 const corsOptions = {
-  origin:['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175'],
+  origin:[
+    'http://localhost:5173', 
+    'http://localhost:5174', 
+    'http://localhost:5175',
+    'http://www.solewaale.com',
+    'https://www.solewaale.com',
+    'http://solewaale.com',
+    'https://solewaale.com'
+  ],
   credentials: true,
   optionsSuccessStatus: 200
 };
@@ -198,6 +208,8 @@ app.use("/api/addresses", addressRoutes);
 app.use("/api/newsletter", newsletterRoutes);
 app.use("/api/recommendations", recommendationRoutes);
 app.use("/api/auth", passwordResetRoutes);
+app.use("/api/email-test", emailTestRoutes);
+
 app.use("/api", docsRoutes);
 app.use("/", healthRoutes);
 

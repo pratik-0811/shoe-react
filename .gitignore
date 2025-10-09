@@ -23,3 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 .env
+
+# Files with sensitive credentials
+public/assets/Api.php

@@ -312,7 +312,10 @@ class EmailService {
       const htmlContent = this.generateInvoiceHTML(invoiceData, customerName);
 
       const mailOptions = {
-        from: `"Solewaale" <${process.env.SMTP_USER}>`,
+        from: {
+          name: process.env.EMAIL_FROM_NAME || 'Solewaale',
+          address: process.env.FROM_EMAIL || process.env.SMTP_USER
+        },
         to: email,
         subject: `Invoice for Order #${invoiceData.orderNumber} - Solewaale`,
         html: htmlContent
@@ -463,8 +466,8 @@ class EmailService {
                     <h3>Invoice Details</h3>
                     <p><strong>Order Number:</strong> ${invoiceData.orderNumber}</p>
                     <p><strong>Invoice Date:</strong> ${new Date(invoiceData.date).toLocaleDateString()}</p>
-                    <p><strong>Payment Method:</strong> ${invoiceData.paymentMethod.replace('_', ' ').toUpperCase()}</p>
-                    <p><strong>Status:</strong> <span class="payment-status ${invoiceData.paymentMethod === 'cash_on_delivery' ? 'status-pending' : 'status-paid'}">${invoiceData.paymentMethod === 'cash_on_delivery' ? 'Pending' : 'Paid'}</span></p>
+                    <p><strong>Payment Method:</strong> ${(invoiceData.paymentMethod || 'N/A').replace('_', ' ').toUpperCase()}</p>
+                    <p><strong>Status:</strong> <span class="payment-status ${(invoiceData.paymentMethod || '') === 'cash_on_delivery' ? 'status-pending' : 'status-paid'}">${(invoiceData.paymentMethod || '') === 'cash_on_delivery' ? 'Pending' : 'Paid'}</span></p>
                 </div>
                 
                 <div class="customer-info">

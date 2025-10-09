@@ -154,7 +154,7 @@ const ThankYou: React.FC = () => {
               
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Link
-                  to={orderId ? `/order-success/${orderId}` : '/profile'}
+                  to={orderId ? `/order/${orderId}` : '/profile'}
                   className="flex justify-center py-3 px-6 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 >
                   View Full Order Details

@@ -289,6 +289,45 @@
     nav a, .nav-link {
       font-size: 0.8125rem !important;
     }
+    
+    /* Checkout page mobile optimizations */
+    .checkout-container {
+      padding: 0.5rem !important;
+    }
+    
+    .checkout-form-section {
+      margin-bottom: 1rem !important;
+      padding: 0.75rem !important;
+    }
+    
+    .checkout-input {
+      font-size: 0.875rem !important;
+      padding: 0.625rem !important;
+    }
+    
+    .checkout-button {
+      padding: 0.75rem 1rem !important;
+      font-size: 0.875rem !important;
+    }
+    
+    .order-summary {
+      position: static !important;
+      margin-top: 1rem !important;
+    }
+    
+    .payment-method-card {
+      padding: 0.75rem !important;
+      margin-bottom: 0.5rem !important;
+    }
+    
+    .cart-item-mobile {
+      padding: 0.5rem !important;
+    }
+    
+    .cart-item-image {
+      width: 3rem !important;
+      height: 3rem !important;
+    }
   }
 }
 
@@ -346,6 +385,71 @@
   /* Responsive text sizing */
   .text-responsive {
     font-size: clamp(0.875rem, 2.5vw, 1rem);
+  }
+  
+  /* Checkout page mobile styles */
+  @media (max-width: 768px) {
+    .checkout-layout {
+      display: block !important;
+    }
+    
+    .checkout-main {
+      width: 100% !important;
+      margin-bottom: 1.5rem;
+    }
+    
+    .checkout-sidebar {
+      width: 100% !important;
+      position: static !important;
+      top: auto !important;
+    }
+    
+    .form-grid {
+      grid-template-columns: 1fr !important;
+      gap: 1rem !important;
+    }
+    
+    .address-card {
+      padding: 0.75rem !important;
+      margin-bottom: 0.75rem !important;
+    }
+    
+    .payment-options {
+      gap: 0.75rem !important;
+    }
+    
+    .order-item {
+      flex-direction: column !important;
+      align-items: flex-start !important;
+      gap: 0.5rem !important;
+    }
+    
+    .order-item-image {
+      width: 100% !important;
+      max-width: 4rem !important;
+      height: 4rem !important;
+    }
+    
+    .order-item-details {
+      width: 100% !important;
+    }
+    
+    .order-item-price {
+      align-self: flex-end !important;
+    }
+    
+    .checkout-button-mobile {
+      width: 100% !important;
+      padding: 1rem !important;
+      font-size: 1rem !important;
+      position: sticky !important;
+      bottom: 0 !important;
+      z-index: 10 !important;
+      background: white !important;
+      border-top: 1px solid #e5e7eb !important;
+      margin: 0 -1rem !important;
+      border-radius: 0 !important;
+    }
   }
   
   .text-responsive-lg {

@@ -10,7 +10,8 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=production
-      - REACT_APP_API_URL=http://localhost:5000/api
+      - VITE_APP_API_URL=https://api.solewaale.com/api
+      - VITE_APP_ENVIRONMENT=production
     depends_on:
       - backend
     networks:
@@ -19,7 +20,7 @@ services:
   # Backend Node.js Application
   backend:
     build:
-      context: ../shoe-backend
+      context: ./shoe-backend
       dockerfile: Dockerfile
     ports:
       - "5000:5000"
@@ -28,9 +29,12 @@ services:
       - PORT=5000
       - MONGODB_URI=mongodb://mongo:27017/shoe-store
       - JWT_SECRET=${JWT_SECRET}
-      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
-      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
-      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
+      - FRONTEND_URL=https://www.solewaale.com
+      - CORS_ORIGIN=https://www.solewaale.com,https://solewaale.com
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASS=${SMTP_PASS}
+      - RAZORPAY_KEY_ID=${RAZORPAY_KEY_ID}
+      - RAZORPAY_KEY_SECRET=${RAZORPAY_KEY_SECRET}
     depends_on:
       - mongo
     networks:

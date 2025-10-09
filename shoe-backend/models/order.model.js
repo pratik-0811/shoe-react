@@ -71,7 +71,9 @@ const orderSchema = new mongoose.Schema({
   cancelledAt: { type: Date },
   cancelReason: { type: String }
 }, {
-  timestamps: true
+  timestamps: true,
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
 });
 
 // Generate order number before saving
@@ -106,6 +108,11 @@ orderSchema.virtual('canCancel').get(function() {
 // Virtual for final amount after discounts
 orderSchema.virtual('finalAmount').get(function() {
   return this.subtotal + this.shippingCost + this.tax - this.totalDiscount;
+});
+
+// Virtual for payment ID (for frontend compatibility)
+orderSchema.virtual('paymentId').get(function() {
+  return this.paymentDetails?.razorpay_payment_id || this.paymentDetails?.razorpay_order_id || 'N/A';
 });
 
 // Method to calculate total discount from applied coupons
